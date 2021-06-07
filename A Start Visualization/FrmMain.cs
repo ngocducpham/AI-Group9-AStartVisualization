@@ -7,7 +7,7 @@ namespace A_Start_Visualization
     public partial class FrmMain : Form
     {
         private const int CELL_SIZE = 30;
-        private int BOARD_WIDTH, BOARD_HEIGHT;
+        private int BOARD_WIDTH, BOARD_HEIGHT,a;
 
         private DrawMode DrawMode;
         private int[,] BoardData;
