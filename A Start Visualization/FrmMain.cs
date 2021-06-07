@@ -147,7 +147,6 @@ namespace A_Start_Visualization
         private void BrushCell(Graphics g)
         {
             Point cellPos;
-            Brush brush = Brushes.White;
             for (int i = 0; i < boardI; i++)
             {
                 for (int j = 0; j < boardJ; j++)
