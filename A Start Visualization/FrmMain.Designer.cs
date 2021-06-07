@@ -45,6 +45,7 @@ namespace A_Start_Visualization
             this.rbtBFS = new System.Windows.Forms.RadioButton();
             this.rbtDFS = new System.Windows.Forms.RadioButton();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.btnClearWall = new System.Windows.Forms.Button();
             this.pnBoard = new A_Start_Visualization.PanelBorad();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -60,7 +61,7 @@ namespace A_Start_Visualization
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1341, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1341, 30);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -70,7 +71,7 @@ namespace A_Start_Visualization
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // saveToolStripMenuItem
@@ -93,7 +94,7 @@ namespace A_Start_Visualization
             this.aboutToolStripMenuItem1,
             this.viewHelpToolStripMenuItem});
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(55, 26);
             this.aboutToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem1
@@ -200,8 +201,19 @@ namespace A_Start_Visualization
             this.rbtDFS.Text = "DFS";
             this.rbtDFS.UseVisualStyleBackColor = true;
             // 
+            // btnClearWall
+            // 
+            this.btnClearWall.Location = new System.Drawing.Point(1041, 342);
+            this.btnClearWall.Name = "btnClearWall";
+            this.btnClearWall.Size = new System.Drawing.Size(97, 28);
+            this.btnClearWall.TabIndex = 3;
+            this.btnClearWall.Text = "Clear Wall";
+            this.btnClearWall.UseVisualStyleBackColor = true;
+            this.btnClearWall.Click += new System.EventHandler(this.btnClearWall_Click);
+            // 
             // pnBoard
             // 
+            this.pnBoard.BackColor = System.Drawing.Color.White;
             this.pnBoard.Location = new System.Drawing.Point(12, 56);
             this.pnBoard.Name = "pnBoard";
             this.pnBoard.Size = new System.Drawing.Size(1004, 639);
@@ -213,9 +225,12 @@ namespace A_Start_Visualization
             // 
             // FrmMain
             // 
+            this.AcceptButton = this.btnClearWall;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1341, 723);
+            this.Controls.Add(this.btnClearWall);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pnBoard);
@@ -255,6 +270,7 @@ namespace A_Start_Visualization
         private System.Windows.Forms.RadioButton rbtBFS;
         private System.Windows.Forms.RadioButton rbtDFS;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button btnClearWall;
     }
 }
 

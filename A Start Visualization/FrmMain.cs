@@ -129,6 +129,21 @@ namespace A_Start_Visualization
             DrawMode = DrawMode.DrawGoal;
         }
 
+        private void btnClearWall_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < boardI; i++)
+            {
+                for (int j = 0; j < boardJ; j++)
+                {
+                    if (BoardData[i, j] == 1)
+                    {
+                        BoardData[i, j] = 0;
+                    }
+                }
+            }
+            pnBoard.Invalidate();
+        }
+
         private void BrushCell(Graphics g)
         {
             Point cellPos;
