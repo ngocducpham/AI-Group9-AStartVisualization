@@ -11,11 +11,13 @@ namespace A_Start_Visualization
         private int BOARD_WIDTH, BOARD_HEIGHT;
 
         private DrawMode DrawMode;
-        private int[,] BoardData;
+
         private int boardI, boardJ;
 
-        private bool isDrawWall;
-        private CellPosition CellStartPositon, CellGoalPosition;
+        private Maze Board;
+        private Graphics mazeGrapics;
+        private Cell Current;
+        private bool isFind = false;
 
         public delegate double Heuristic(Maze board, Cell current);
 
@@ -28,14 +30,12 @@ namespace A_Start_Visualization
         {
             boardI = pnBoard.Height / CELL_SIZE;
             boardJ = pnBoard.Width / CELL_SIZE;
-            BoardData = new int[boardI, boardJ];
-            MessageBox.Show(BoardData.GetLength(0).ToString() + " " + BoardData.GetLength(1));
-            InitBoardData();
+            Board = new Maze(boardJ, boardI);
+
             BOARD_WIDTH = boardJ * CELL_SIZE;
             BOARD_HEIGHT = boardI * CELL_SIZE;
+
             Control.CheckForIllegalCrossThreadCalls = false;
-            CellStartPositon = new CellPosition { I = -1 };
-            CellGoalPosition = new CellPosition { I = -1 };
         }
 
         private void DrawBoard(Graphics g)
@@ -54,46 +54,31 @@ namespace A_Start_Visualization
             }
         }
 
-        private void InitBoardData()
-        {
-            for (int i = 0; i < boardI; i++)
-            {
-                for (int j = 0; j < boardJ; j++)
-                {
-                    BoardData[i, j] = 0;
-                }
-            }
-
-        }
 
         private void pnBoard_Paint(object sender, PaintEventArgs e)
         {
             BrushCell(e.Graphics);
             DrawBoard(e.Graphics);
+            if (isFind)
+                traces(Current, e.Graphics);
         }
 
         private void pnBoard_MouseDown(object sender, MouseEventArgs e)
         {
             var cellPos = GetCellPositionBoard(e.Location);
-            if (BoardData[cellPos.I, cellPos.J] != 0)
+            if (Board.Cells[cellPos.I, cellPos.J].Value != 0)
                 return;
+
             switch (DrawMode)
             {
                 case DrawMode.DrawWall:
-                    BoardData[cellPos.I, cellPos.J] = 1;
-                    isDrawWall = true;
+                    Board.SetWall(cellPos.I, cellPos.J);
                     break;
                 case DrawMode.DrawStart:
-                    if (CellStartPositon.I != -1)
-                        BoardData[CellStartPositon.I, CellStartPositon.J] = 0;
-                    BoardData[cellPos.I, cellPos.J] = 2;
-                    CellStartPositon = cellPos;
+                    Board.StartPos = cellPos;
                     break;
                 case DrawMode.DrawGoal:
-                    if (CellGoalPosition.I != -1)
-                        BoardData[CellGoalPosition.I, CellGoalPosition.J] = 0;
-                    BoardData[cellPos.I, cellPos.J] = 3;
-                    CellGoalPosition = cellPos;
+                    Board.GoalPos = cellPos;
                     break;
                 default:
                     break;
@@ -105,17 +90,11 @@ namespace A_Start_Visualization
         private void pnBoard_MouseMove(object sender, MouseEventArgs e)
         {
             var cellPos = GetCellPositionBoard(e.Location);
-            if (!isDrawWall || e.Location.X < 0 || e.Location.X > BOARD_WIDTH || e.Location.Y < 0 || e.Location.Y > BOARD_HEIGHT
-                || BoardData[cellPos.I, cellPos.J] != 0)
+            if (DrawMode != DrawMode.DrawWall || e.Button != MouseButtons.Left || e.Location.X < 0 || e.Location.X > BOARD_WIDTH
+                || e.Location.Y < 0 || e.Location.Y > BOARD_HEIGHT || Board.Cells[cellPos.I, cellPos.J].Value != 0)
                 return;
-
-            BoardData[cellPos.I, cellPos.J] = 1;
+            Board.SetWall(cellPos.I, cellPos.J);
             pnBoard.Invalidate();
-        }
-
-        private void pnBoard_MouseUp(object sender, MouseEventArgs e)
-        {
-            isDrawWall = false;
         }
 
         private void rbtDrawWall_CheckedChanged(object sender, EventArgs e)
@@ -139,37 +118,52 @@ namespace A_Start_Visualization
             {
                 for (int j = 0; j < boardJ; j++)
                 {
-                    if (BoardData[i, j] == 1)
+                    Board.Cells[i, j].Value = 0;
+                    Console.Write(Board.Cells[i, j].Value + " ");
+                    if (Board.Cells[i, j].Value == 1)
                     {
-                        BoardData[i, j] = 0;
+                        Board.Cells[i, j].Value = 0;
                     }
                 }
+                Console.WriteLine();
             }
             pnBoard.Invalidate();
         }
 
         private void btnFind_Click(object sender, EventArgs e)
         {
-
+            if(AStart(Board, heuristic))
+            {
+                isFind = true;
+            }
         }
 
         private void BrushCell(Graphics g)
         {
             Point cellPos;
+
             for (int i = 0; i < boardI; i++)
             {
                 for (int j = 0; j < boardJ; j++)
                 {
                     cellPos = GetCellPositonXY(i, j);
-                    if (BoardData[i, j] == 1)
+                    if (Board.Cells[i, j].Value == 1)
                         g.FillRectangle(Brushes.Black, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if (BoardData[i, j] == 2)
+                    else if (Board.Cells[i, j].Value == 2)
                         g.FillRectangle(Brushes.SpringGreen, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if (BoardData[i, j] == 3)
+                    else if (Board.Cells[i, j].Value == 3)
                         g.FillRectangle(Brushes.Red, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Board.Cells[i, j].Value == 4)
+                        g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Board.Cells[i, j].Value == 5)
+                        g.FillRectangle(Brushes.Aqua, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Board.Cells[i, j].Value == 6)
+                        g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
 
                 }
+
             }
+
         }
 
         // i,j to point for draw
@@ -190,16 +184,42 @@ namespace A_Start_Visualization
                 Math.Pow(current.Position.J - board.GoalCell.Position.J, 2));
         }
 
-        //private void traces(Cell current)
-        //{
-        //    string path = $"({Board.GoalPos.I},{Board.GoalPos.J}) -> ";
-        //    while (current.CameFrom != Board.StartCell)
-        //    {
-        //        path += $"({current.CameFrom.Position.I},{current.CameFrom.Position.J}) -> ";
-        //        current.CameFrom = current.CameFrom.CameFrom;
-        //    }
-        //    Console.WriteLine(path + $"({Board.StartPos.I},{Board.StartPos.J})");
-        //}
+        private void traces(Cell current, Graphics g)
+        {
+            Point cellPos;
+            //g.DrawLine(Pens.Yellow, cellPos.X, cellPos.Y + CELL_SIZE / 2, cellPos.Y + CELL_SIZE, cellPos.Y + CELL_SIZE / 2);
+            CellPosition old = current.CameFrom.Position;
+            Pen pen = new Pen(Color.Yellow, 3);
+            while (current.CameFrom != Board.StartCell)
+            {
+                //cellPos = GetCellPositonXY(current.CameFrom.Position.I, current.CameFrom.Position.J);
+                //if (current.CameFrom.CameFrom.Position.I != current.CameFrom.Position.I)
+                //{
+                //    if (current.CameFrom.CameFrom.CameFrom.Position.J < current.CameFrom.Position.J)
+                //    {
+                //        g.DrawLine(pen, cellPos.X + CELL_SIZE / 2, cellPos.Y, cellPos.X + CELL_SIZE / 2, cellPos.Y + CELL_SIZE / 2);
+                //        g.DrawLine(pen, cellPos.X + CELL_SIZE / 2, cellPos.Y + CELL_SIZE / 2, cellPos.X + CELL_SIZE, 
+                //            cellPos.Y + CELL_SIZE / 2);
+                //    }
+                //    else if (current.CameFrom.CameFrom.CameFrom.Position.J > current.CameFrom.Position.J)
+                //    {
+                //        g.DrawLine(pen, cellPos.X + CELL_SIZE / 2, cellPos.Y, cellPos.X + CELL_SIZE / 2, cellPos.Y + CELL_SIZE / 2);
+                //        g.DrawLine(pen, cellPos.X + CELL_SIZE / 2, cellPos.Y + CELL_SIZE / 2, cellPos.X, cellPos.Y + CELL_SIZE / 2);
+                //    }
+                //    else
+                //        g.DrawLine(pen, cellPos.X + CELL_SIZE / 2, cellPos.Y, cellPos.X + CELL_SIZE / 2, cellPos.Y + CELL_SIZE);
+                //}
+                //else if (current.CameFrom.CameFrom.Position.I == current.CameFrom.Position.I)
+                //{
+                //    g.DrawLine(pen, cellPos.X, cellPos.Y + CELL_SIZE / 2, cellPos.X + CELL_SIZE, cellPos.Y + CELL_SIZE / 2);
+                //}
+                current.CameFrom.Value = 6;
+                current.CameFrom = current.CameFrom.CameFrom;
+
+            }
+            pnBoard.Invalidate();
+
+        }
 
         private bool AStart(Maze board, Heuristic h)
         {
@@ -209,21 +229,26 @@ namespace A_Start_Visualization
             open.Add(board.Cells[board.StartPos.I, board.StartPos.J]);
             board.Cells[board.StartPos.I, board.StartPos.J].gScore = 0;
             board.Cells[board.StartPos.I, board.StartPos.J].fScore = 0;
+            Board.InitNeighbor();
+
             while (close.Count != 0)
             {
                 foreach (var item in FindNext(close))
                 {
                     if (item == board.GoalCell)
                     {
-                        //traces(item);
+                        Current = item;
+                        pnBoard.Invalidate();
                         return true;
                     }
-                    item.Value = 5;
-
+                    if (item != Board.StartCell)
+                        item.Value = 5;
+                    
                     close.Remove(item);
 
                     foreach (var neighbor in item.Neighbors)
                     {
+
                         if (neighbor.CameFrom == null)
                             neighbor.CameFrom = item;
                         double he = h(board, neighbor);
@@ -231,13 +256,16 @@ namespace A_Start_Visualization
                         if (!Exits(open, neighbor))
                         {
                             close.Add(neighbor);
-                            neighbor.Value = 4;
+                            if (neighbor.Value == 0)
+                                neighbor.Value = 4;
+                            
                         }
                         open.Add(neighbor);
                     }
 
                 }
             }
+            pnBoard.Invalidate();
             return false;
         }
 
@@ -299,6 +327,10 @@ public class Maze
         get => start;
         set
         {
+            if (StartCell != null)
+            {
+                StartCell.Value = 0;
+            }
             start = value;
             Cells[value.I, value.J].Value = 2;
             StartCell = Cells[value.I, value.J];
@@ -311,6 +343,10 @@ public class Maze
         get => end;
         set
         {
+            if (GoalCell != null)
+            {
+                GoalCell.Value = 0;
+            }
             end = value;
             Cells[value.I, value.J].Value = 3;
             GoalCell = Cells[value.I, value.J];
@@ -342,7 +378,6 @@ public class Maze
                 Cells[i, j].Position = new CellPosition { I = i, J = j };
             }
         }
-
 
     }
 

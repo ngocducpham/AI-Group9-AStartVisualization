@@ -222,7 +222,6 @@ namespace A_Start_Visualization
             this.pnBoard.Paint += new System.Windows.Forms.PaintEventHandler(this.pnBoard_Paint);
             this.pnBoard.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnBoard_MouseDown);
             this.pnBoard.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnBoard_MouseMove);
-            this.pnBoard.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnBoard_MouseUp);
             // 
             // btnFind
             // 
