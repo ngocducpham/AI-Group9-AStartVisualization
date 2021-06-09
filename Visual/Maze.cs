@@ -83,13 +83,13 @@ namespace Visual
         public double hScore { get; set; }
         public double fScore { get; set; }
         public CellPositon Position { get; set; }
-        public List<Cell> Neighbors { get;set; }
+        //public List<Cell> Neighbors { get;set; }
         public Cell CameFrom { get; set; }
 
         public Cell()
         {
             Position = new CellPositon();
-            Neighbors = new List<Cell>();
+            //Neighbors = new List<Cell>();
         }
 
     }
