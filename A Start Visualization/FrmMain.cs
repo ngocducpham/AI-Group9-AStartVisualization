@@ -248,9 +248,10 @@ namespace A_Start_Visualization
 
                     foreach (var neighbor in item.Neighbors)
                     {
-
+                        // f = g + h
                         if (neighbor.CameFrom == null)
                             neighbor.CameFrom = item;
+                        // thieu g
                         double he = h(board, neighbor);
                         neighbor.fScore = Math.Round(he, 1);
                         if (!Exits(open, neighbor))
