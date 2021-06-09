@@ -180,8 +180,8 @@ namespace Visual
             //Point posCur = ConvertToXY(current.Position.I, current.Position.J);
             //Point posGoal = ConvertToXY(Maze.GoalCell.Position.I, Maze.GoalCell.Position.J);
 
-            //return Math.Round(Math.Sqrt(Math.Pow(posCur.X - posGoal.X, 2) + Math.Pow(posCur.Y - posGoal.Y, 2)), 3);
-            return Math.Abs(current.Position.I - Maze.GoalCell.Position.I) + Math.Abs(current.Position.J - Maze.GoalCell.Position.J);
+            /daretufdfrn Math.Round(Math.Sqrt(Math.Pow(posCur.X - posGoal.X, 2) + Math.Pow(posCur.Y - posGoal.Y, 2)), 3);
+            //return Math.Abs(current.Position.I - Maze.GoalCell.Position.I) + Math.Abs(current.Position.J - Maze.GoalCell.Position.J);
         }
 
         private void reconstruct_path(Cell current)
