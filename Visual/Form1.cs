@@ -77,15 +77,15 @@ namespace Visual
                     if (Maze.Cells[i, j].Value == 1)
                         g.FillRectangle(Brushes.Black, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == 2)
-                        g.FillRectangle(Brushes.Red, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                        g.FillRectangle(Brushes.SpringGreen, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == 3)
-                        g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                        g.FillRectangle(Brushes.Red, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == 4)
                         g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == 5)
-                        g.FillRectangle(Brushes.Blue, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                        g.FillRectangle(Brushes.Aqua, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == 6)
-                        g.FillRectangle(Brushes.Brown, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                        g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
 
                 }
             }
@@ -177,16 +177,15 @@ namespace Visual
 
         private double heuristic(Cell current)
         {
-            Point posCur = ConvertToXY(current.Position.I, current.Position.J);
-            Point posGoal = ConvertToXY(Maze.GoalCell.Position.I, Maze.GoalCell.Position.J);
+            //Point posCur = ConvertToXY(current.Position.I, current.Position.J);
+            //Point posGoal = ConvertToXY(Maze.GoalCell.Position.I, Maze.GoalCell.Position.J);
 
-            return Math.Round(Math.Sqrt(Math.Pow(posCur.X - posGoal.X, 2) + Math.Pow(posCur.Y - posGoal.Y, 2)), 2);
+            //return Math.Round(Math.Sqrt(Math.Pow(posCur.X - posGoal.X, 2) + Math.Pow(posCur.Y - posGoal.Y, 2)), 3);
+            return Math.Abs(current.Position.I - Maze.GoalCell.Position.I) + Math.Abs(current.Position.J - Maze.GoalCell.Position.J);
         }
 
         private void reconstruct_path(Cell current)
         {
-            current = current.CameFrom;
-            current.Value = 6;
             while (true)
             {
                 current = current.CameFrom;
@@ -220,31 +219,34 @@ namespace Visual
                 {
                     if (current == maze.GoalCell)
                     {
+                        current.Value = 3;
                         reconstruct_path(current);
                         return true;
                     }
                     if (current != maze.StartCell)
                         current.Value = 5;
+                    pnMaze.Invalidate();
                     openSet.Remove(current);
                     FindNeighbor(current);
                     foreach (var neughbor in current.Neighbors)
                     {
-                        var tentative_gScore = current.gScore + 1;
+                        var tentative_gScore = current.gScore + 2;
                         if (tentative_gScore < neughbor.gScore)
                         {
                             neughbor.CameFrom = current;
                             neughbor.gScore = tentative_gScore;
-                            neughbor.fScore = neughbor.gScore + her(current);
+                            neughbor.fScore = neughbor.gScore + her(neughbor);
                             if (!Exists(openSet, neughbor))
                             {
                                 neughbor.Value = 4;
                                 openSet.Add(neughbor);
                             }
                         }
+                        pnMaze.Invalidate();
                     }
                 }
             }
-
+            MessageBox.Show("Khong tim duoc");
             return false;
         }
 
@@ -260,30 +262,41 @@ namespace Visual
 
         private void FindNeighbor(Cell current)
         {
-            if (current.Position.I - 1 > 0 && Maze.Cells[current.Position.I - 1, current.Position.J].Value == 0)
-                current.Neighbors.Add(Maze.Cells[current.Position.I - 1, current.Position.J]);
-            if (current.Position.I + 1 < Maze.MazeI && Maze.Cells[current.Position.I + 1, current.Position.J].Value == 0)
-                current.Neighbors.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
-            if (current.Position.J - 1 > 0 && Maze.Cells[current.Position.I, current.Position.J - 1].Value == 0)
-                current.Neighbors.Add(Maze.Cells[current.Position.I, current.Position.J - 1]);
-            if (current.Position.J + 1 < Maze.MazeJ && Maze.Cells[current.Position.I, current.Position.J + 1].Value == 0)
+            if (current.Position.J + 1 < Maze.MazeJ && (Maze.Cells[current.Position.I, current.Position.J + 1].Value == 0
+                || Maze.Cells[current.Position.I, current.Position.J + 1].Value == 3))
                 current.Neighbors.Add(Maze.Cells[current.Position.I, current.Position.J + 1]);
+
+            if (current.Position.I - 1 > 0 && (Maze.Cells[current.Position.I - 1, current.Position.J].Value == 0
+                || Maze.Cells[current.Position.I - 1, current.Position.J].Value == 3))
+                current.Neighbors.Add(Maze.Cells[current.Position.I - 1, current.Position.J]);
+
+            if (current.Position.J - 1 > 0 && (Maze.Cells[current.Position.I, current.Position.J - 1].Value == 0
+                || Maze.Cells[current.Position.I, current.Position.J - 1].Value == 3))
+                current.Neighbors.Add(Maze.Cells[current.Position.I, current.Position.J - 1]);
+
+            if (current.Position.I + 1 < Maze.MazeI && (Maze.Cells[current.Position.I + 1, current.Position.J].Value == 0
+                || Maze.Cells[current.Position.I + 1, current.Position.J].Value == 3))
+                current.Neighbors.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
+
+           
+                            
         }
 
         private List<Cell> MinfScore(List<Cell> open)
         {
-            double min = open[0].Value;
+            double min = open[0].fScore;
             List<Cell> result = new List<Cell>();
             result.Add(open[0]);
 
             for (int i = 1; i < open.Count; i++)
             {
-                if (open[i].Value < min)
+                if (open[i].fScore < min)
                 {
                     result.Clear();
                     result.Add(open[i]);
+                    min = open[i].fScore;
                 }
-                else if (open[i].Value == min)
+                else if (open[i].fScore == min)
                 {
                     result.Add(open[i]);
                 }
