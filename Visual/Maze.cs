@@ -19,9 +19,11 @@ namespace Visual
             {
                 if(startCell != null)
                 {
-                    startCell.Value = 0;             
+                    startCell.Value = 0;
                 }
                 startCell = value;
+                if (startCell == null)
+                    return;
                 startCell.Value = 2;
             }
         }
@@ -38,6 +40,8 @@ namespace Visual
                 }
 
                 goalCell = value;
+                if (goalCell == null)
+                    return;
                 goalCell.Value = 3;
             }
         }
@@ -79,7 +83,7 @@ namespace Visual
         public double hScore { get; set; }
         public double fScore { get; set; }
         public CellPositon Position { get; set; }
-        public List<Cell> Neighbors { get; set; }
+        public List<Cell> Neighbors { get;set; }
         public Cell CameFrom { get; set; }
 
         public Cell()
@@ -87,7 +91,6 @@ namespace Visual
             Position = new CellPositon();
             Neighbors = new List<Cell>();
         }
-
 
     }
 

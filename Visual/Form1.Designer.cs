@@ -37,6 +37,7 @@ namespace Visual
             this.btnFind = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.pnMaze = new Visual.MazeControl();
+            this.btnReset = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,12 +132,23 @@ namespace Visual
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             this.pnMaze.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseUp);
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(990, 325);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.TabIndex = 4;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1229, 716);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnFind);
             this.Controls.Add(this.groupBox1);
@@ -160,6 +172,7 @@ namespace Visual
         private System.Windows.Forms.RadioButton rbtDrawWall;
         private System.Windows.Forms.Button btnFind;
         private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Button btnReset;
     }
 }
 
