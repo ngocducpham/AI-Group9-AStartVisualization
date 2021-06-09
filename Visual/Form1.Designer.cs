@@ -36,6 +36,7 @@ namespace Visual
             this.rbtDrawWall = new System.Windows.Forms.RadioButton();
             this.btnFind = new System.Windows.Forms.Button();
             this.pnMaze = new Visual.MazeControl();
+            this.btnStop = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,12 +120,23 @@ namespace Visual
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             this.pnMaze.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseUp);
             // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(990, 277);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(75, 23);
+            this.btnStop.TabIndex = 3;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1229, 716);
+            this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnFind);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pnMaze);
@@ -146,6 +158,7 @@ namespace Visual
         private System.Windows.Forms.RadioButton rbtDrawStart;
         private System.Windows.Forms.RadioButton rbtDrawWall;
         private System.Windows.Forms.Button btnFind;
+        private System.Windows.Forms.Button btnStop;
     }
 }
 
