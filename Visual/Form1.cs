@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 /*
@@ -31,10 +32,12 @@ namespace Visual
 
         private Graphics MazeGraphics;
 
+        private Thread ThreadFind;
+
         public Form1()
         {
             InitializeComponent();
-            MazeGraphics = pnMaze.CreateGraphics();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -44,6 +47,12 @@ namespace Visual
 
             MAZE_HEIGHT = pnMaze.Height / CELL_SIZE * CELL_SIZE;
             Maze = new Maze(pnMaze.Width / CELL_SIZE, pnMaze.Height / CELL_SIZE);
+
+            Control.CheckForIllegalCrossThreadCalls = false;
+
+            MazeGraphics = pnMaze.CreateGraphics();
+
+
         }
 
         private void pnMaze_Paint(object sender, PaintEventArgs e)
@@ -164,7 +173,21 @@ namespace Visual
         private void btnFind_Click(object sender, EventArgs e)
         {
             ResetMaze();
-            aStart(Maze, heuristic);         
+            DrawGrid(MazeGraphics);
+            ThreadFind = new Thread(() => aStart(Maze, heuristic));
+            ThreadFind.IsBackground = true;
+            ThreadFind.Start();
+            btnFind.Enabled = false;
+            btnStop.Enabled = true;
+            groupBox1.Enabled = false;
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            ThreadFind.Abort();
+            btnFind.Enabled = true;
+            btnStop.Enabled = false;
+            groupBox1.Enabled = true;
         }
 
         private void ResetMaze()
@@ -228,7 +251,7 @@ namespace Visual
 
         private void reconstruct_path(Cell current)
         {
-            BrushCell(Maze.GoalCell.Position.I, Maze.GoalCell.Position.J, Brushes.Red);
+            BrushCell(Maze.StartCell.Position.I, Maze.StartCell.Position.J, Brushes.SpringGreen);
             while (true)
             {
                 current = current.CameFrom;
@@ -236,8 +259,10 @@ namespace Visual
                     break;
                 //current.Value = 6;
                 BrushCell(current.Position.I, current.Position.J, Brushes.Yellow);
+                DrawGrid(MazeGraphics);
+                Thread.Sleep(10);
             }
-            BrushCell(Maze.StartCell.Position.I, Maze.StartCell.Position.J, Brushes.SpringGreen);
+
             DrawGrid(MazeGraphics);
             //pnMaze.Invalidate();
         }
@@ -272,8 +297,13 @@ namespace Visual
 
                     //if (current != maze.StartCell)
                     //    current.Value = 5;
+                    if (current != maze.StartCell)
+                    {
+                        BrushCell(current.Position.I, current.Position.J, Brushes.Cyan);
+                        DrawGrid(MazeGraphics);
+                        Thread.Sleep(10);
+                    }
 
-                    BrushCell(current.Position.I, current.Position.J, Brushes.Cyan);
                     //BrushCell(MazeGraphics);
                     //pnMaze.Invalidate();
                     openSet.Remove(current);
@@ -290,7 +320,10 @@ namespace Visual
                             if (!Exists(openSet, neughbor))
                             {
                                 //neughbor.Value = 4;
-                                BrushCell(neughbor.Position.I, neughbor.Position.J, Brushes.Pink);
+                                if (neughbor != maze.GoalCell)
+                                    BrushCell(neughbor.Position.I, neughbor.Position.J, Brushes.Pink);
+                                DrawGrid(MazeGraphics);
+                                Thread.Sleep(10);
 
                                 openSet.Add(neughbor);
                             }
@@ -330,11 +363,7 @@ namespace Visual
             if (current.Position.I + 1 < Maze.MazeI && (Maze.Cells[current.Position.I + 1, current.Position.J].Value == 0
                 || Maze.Cells[current.Position.I + 1, current.Position.J].Value == 3))
                 current.Neighbors.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
-
-
-
-        }
-
+        }   
 
         private List<Cell> MinfScore(List<Cell> open)
         {
