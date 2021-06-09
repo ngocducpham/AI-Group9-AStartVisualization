@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -39,7 +40,7 @@ namespace Visual
             MAZE_WIDTH = pnMaze.Width / CELL_SIZE * CELL_SIZE;
 
             MAZE_HEIGHT = pnMaze.Height / CELL_SIZE * CELL_SIZE;
-            Maze = new Maze(pnMaze.Width / CELL_SIZE, pnMaze.Height / CELL_SIZE);           
+            Maze = new Maze(pnMaze.Width / CELL_SIZE, pnMaze.Height / CELL_SIZE);
         }
 
         private void pnMaze_Paint(object sender, PaintEventArgs e)
@@ -79,6 +80,13 @@ namespace Visual
                         g.FillRectangle(Brushes.Red, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == 3)
                         g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Maze.Cells[i, j].Value == 4)
+                        g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Maze.Cells[i, j].Value == 5)
+                        g.FillRectangle(Brushes.Blue, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Maze.Cells[i, j].Value == 6)
+                        g.FillRectangle(Brushes.Brown, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+
                 }
             }
         }
@@ -90,7 +98,7 @@ namespace Visual
             switch (DrawMode)
             {
                 case DrawMode.DrawWall:
-                    Maze.Cells[cellPos.I, cellPos.J].Value = 1;                    
+                    Maze.Cells[cellPos.I, cellPos.J].Value = 1;
                     break;
                 case DrawMode.DrawStart:
                     Maze.StartCell = Maze.Cells[cellPos.I, cellPos.J];
@@ -105,6 +113,7 @@ namespace Visual
                     break;
             }
 
+            // gọi sự kiện vẽ
             pnMaze.Invalidate();
         }
 
@@ -117,13 +126,16 @@ namespace Visual
             {
                 return;
             }
-            
+
             Maze.Cells[cellPos.I, cellPos.J].Value = 1;
 
             pnMaze.Invalidate();
         }
 
-        
+        private void btnFind_Click(object sender, EventArgs e)
+        {
+            aStart(Maze, heuristic);
+        }
 
         private void rbtDrawWall_CheckedChanged(object sender, EventArgs e)
         {
@@ -165,12 +177,119 @@ namespace Visual
 
         private double heuristic(Cell current)
         {
+            Point posCur = ConvertToXY(current.Position.I, current.Position.J);
+            Point posGoal = ConvertToXY(Maze.GoalCell.Position.I, Maze.GoalCell.Position.J);
 
+            return Math.Round(Math.Sqrt(Math.Pow(posCur.X - posGoal.X, 2) + Math.Pow(posCur.Y - posGoal.Y, 2)), 2);
         }
 
-        private bool aStart(Maze maze,Heuristic her)
+        private void reconstruct_path(Cell current)
         {
+            current = current.CameFrom;
+            current.Value = 6;
+            while (true)
+            {
+                current = current.CameFrom;
+                if (current == Maze.StartCell)
+                    break;
+                current.Value = 6;
+            }
+            pnMaze.Invalidate();
+        }
+
+        private bool aStart(Maze maze, Heuristic her)
+        {
+            List<Cell> openSet = new List<Cell>();
+            openSet.Add(maze.StartCell);
+
+            for (int i = 0; i < maze.MazeI; i++)
+            {
+                for (int j = 0; j < maze.MazeJ; j++)
+                {
+                    maze.Cells[i, j].gScore = 99999;
+                    maze.Cells[i, j].fScore = 99999;
+                }
+            }
+
+            maze.StartCell.gScore = 0;
+            maze.StartCell.fScore = her(maze.StartCell);
+
+            while (openSet.Count != 0)
+            {
+                foreach (var current in MinfScore(openSet))
+                {
+                    if (current == maze.GoalCell)
+                    {
+                        reconstruct_path(current);
+                        return true;
+                    }
+                    if (current != maze.StartCell)
+                        current.Value = 5;
+                    openSet.Remove(current);
+                    FindNeighbor(current);
+                    foreach (var neughbor in current.Neighbors)
+                    {
+                        var tentative_gScore = current.gScore + 1;
+                        if (tentative_gScore < neughbor.gScore)
+                        {
+                            neughbor.CameFrom = current;
+                            neughbor.gScore = tentative_gScore;
+                            neughbor.fScore = neughbor.gScore + her(current);
+                            if (!Exists(openSet, neughbor))
+                            {
+                                neughbor.Value = 4;
+                                openSet.Add(neughbor);
+                            }
+                        }
+                    }
+                }
+            }
+
             return false;
+        }
+
+        private bool Exists(List<Cell> list, Cell cell)
+        {
+            foreach (var item in list)
+            {
+                if (item == cell)
+                    return true;
+            }
+            return false;
+        }
+
+        private void FindNeighbor(Cell current)
+        {
+            if (current.Position.I - 1 > 0 && Maze.Cells[current.Position.I - 1, current.Position.J].Value == 0)
+                current.Neighbors.Add(Maze.Cells[current.Position.I - 1, current.Position.J]);
+            if (current.Position.I + 1 < Maze.MazeI && Maze.Cells[current.Position.I + 1, current.Position.J].Value == 0)
+                current.Neighbors.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
+            if (current.Position.J - 1 > 0 && Maze.Cells[current.Position.I, current.Position.J - 1].Value == 0)
+                current.Neighbors.Add(Maze.Cells[current.Position.I, current.Position.J - 1]);
+            if (current.Position.J + 1 < Maze.MazeJ && Maze.Cells[current.Position.I, current.Position.J + 1].Value == 0)
+                current.Neighbors.Add(Maze.Cells[current.Position.I, current.Position.J + 1]);
+        }
+
+        private List<Cell> MinfScore(List<Cell> open)
+        {
+            double min = open[0].Value;
+            List<Cell> result = new List<Cell>();
+            result.Add(open[0]);
+
+            for (int i = 1; i < open.Count; i++)
+            {
+                if (open[i].Value < min)
+                {
+                    result.Clear();
+                    result.Add(open[i]);
+                }
+                else if (open[i].Value == min)
+                {
+                    result.Add(open[i]);
+                }
+            }
+
+            return result;
         }
 
         #endregion

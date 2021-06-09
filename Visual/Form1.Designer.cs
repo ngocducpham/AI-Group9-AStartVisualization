@@ -35,6 +35,7 @@ namespace Visual
             this.rbtDrawGoal = new System.Windows.Forms.RadioButton();
             this.rbtDelete = new System.Windows.Forms.RadioButton();
             this.pnMaze = new Visual.MazeControl();
+            this.btnFind = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -107,11 +108,22 @@ namespace Visual
             this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             // 
+            // btnFind
+            // 
+            this.btnFind.Location = new System.Drawing.Point(990, 234);
+            this.btnFind.Name = "btnFind";
+            this.btnFind.Size = new System.Drawing.Size(75, 23);
+            this.btnFind.TabIndex = 2;
+            this.btnFind.Text = "Find";
+            this.btnFind.UseVisualStyleBackColor = true;
+            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1229, 716);
+            this.Controls.Add(this.btnFind);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pnMaze);
             this.Name = "Form1";
@@ -131,6 +143,7 @@ namespace Visual
         private System.Windows.Forms.RadioButton rbtDrawGoal;
         private System.Windows.Forms.RadioButton rbtDrawStart;
         private System.Windows.Forms.RadioButton rbtDrawWall;
+        private System.Windows.Forms.Button btnFind;
     }
 }
 

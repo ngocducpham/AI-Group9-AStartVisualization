@@ -62,10 +62,12 @@ namespace Visual
                     {
                         Value = 0,
                         Position = new CellPositon { I = i, J = j}
+                        
                     };
                 }
             }
         }
+
     }
 
     public class Cell
@@ -78,6 +80,7 @@ namespace Visual
         public double fScore { get; set; }
         public CellPositon Position { get; set; }
         public List<Cell> Neighbors { get; set; }
+        public Cell CameFrom { get; set; }
 
         public Cell()
         {
