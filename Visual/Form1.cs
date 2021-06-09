@@ -29,9 +29,12 @@ namespace Visual
 
         private delegate double Heuristic(Cell current);
 
+        private Graphics MazeGraphics;
+
         public Form1()
         {
             InitializeComponent();
+            MazeGraphics = pnMaze.CreateGraphics();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -45,8 +48,8 @@ namespace Visual
 
         private void pnMaze_Paint(object sender, PaintEventArgs e)
         {
-            BrushCell(e.Graphics);
             DrawGrid(e.Graphics);
+
         }
 
         private void DrawGrid(Graphics g)
@@ -67,28 +70,31 @@ namespace Visual
             }
         }
 
-        private void BrushCell(Graphics g)
+        private void BrushCell(int i, int j, Brush color)
         {
-            for (int i = 0; i < Maze.MazeI; i++)
-            {
-                for (int j = 0; j < Maze.MazeJ; j++)
-                {
-                    var cellPos = ConvertToXY(i, j);
-                    if (Maze.Cells[i, j].Value == 1)
-                        g.FillRectangle(Brushes.Black, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if (Maze.Cells[i, j].Value == 2)
-                        g.FillRectangle(Brushes.SpringGreen, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if (Maze.Cells[i, j].Value == 3)
-                        g.FillRectangle(Brushes.Red, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if (Maze.Cells[i, j].Value == 4)
-                        g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if (Maze.Cells[i, j].Value == 5)
-                        g.FillRectangle(Brushes.Aqua, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if (Maze.Cells[i, j].Value == 6)
-                        g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+            var cellPos = ConvertToXY(i, j);
+            MazeGraphics.FillRectangle(color, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
 
-                }
-            }
+            //for (int i = 0; i < Maze.MazeI; i++)
+            //{
+            //    for (int j = 0; j < Maze.MazeJ; j++)
+            //    {
+            //        var cellPos = ConvertToXY(i, j);
+            //        if (Maze.Cells[i, j].Value == 1)
+            //            g.FillRectangle(Brushes.Black, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+            //        else if (Maze.Cells[i, j].Value == 2)
+            //            g.FillRectangle(Brushes.SpringGreen, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+            //        else if (Maze.Cells[i, j].Value == 3)
+            //            g.FillRectangle(Brushes.Red, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+            //        else if (Maze.Cells[i, j].Value == 4)
+            //            g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+            //        else if (Maze.Cells[i, j].Value == 5)
+            //            g.FillRectangle(Brushes.Aqua, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+            //        else if (Maze.Cells[i, j].Value == 6)
+            //            g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+
+            //    }
+            //}
         }
 
 
@@ -99,42 +105,78 @@ namespace Visual
             {
                 case DrawMode.DrawWall:
                     Maze.Cells[cellPos.I, cellPos.J].Value = 1;
+                    BrushCell(cellPos.I, cellPos.J, Brushes.Black);
                     break;
                 case DrawMode.DrawStart:
+                    if (Maze.StartCell != null)
+                        BrushCell(Maze.StartCell.Position.I, Maze.StartCell.Position.J, Brushes.White);
                     Maze.StartCell = Maze.Cells[cellPos.I, cellPos.J];
+                    BrushCell(cellPos.I, cellPos.J, Brushes.SpringGreen);
                     break;
                 case DrawMode.DrawGoal:
+                    if (Maze.GoalCell != null)
+                        BrushCell(Maze.GoalCell.Position.I, Maze.GoalCell.Position.J, Brushes.White);
                     Maze.GoalCell = Maze.Cells[cellPos.I, cellPos.J];
+                    BrushCell(cellPos.I, cellPos.J, Brushes.Red);
                     break;
                 case DrawMode.Delete:
                     Maze.Cells[cellPos.I, cellPos.J].Value = 0;
+                    BrushCell(cellPos.I, cellPos.J, Brushes.White);
                     break;
                 default:
                     break;
             }
-
+            //BrushCell(MazeGraphics);
             // gọi sự kiện vẽ
-            pnMaze.Invalidate();
+            //pnMaze.Invalidate();
         }
 
         // vẽ tường
         private void pnMaze_MouseMove(object sender, MouseEventArgs e)
         {
             var cellPos = ConvertToIJ(e.Location);
-            if (DrawMode != DrawMode.DrawWall || e.Button != MouseButtons.Left || cellPos.I < 0 || cellPos.I >= Maze.MazeI ||
-                cellPos.J < 0 || cellPos.J >= Maze.MazeJ)
+            if ((DrawMode != DrawMode.DrawWall || DrawMode != DrawMode.Delete) && (e.Button != MouseButtons.Left || cellPos.I < 0
+                || cellPos.I >= Maze.MazeI || cellPos.J < 0 || cellPos.J >= Maze.MazeJ))
             {
                 return;
             }
 
-            Maze.Cells[cellPos.I, cellPos.J].Value = 1;
+            if (DrawMode == DrawMode.DrawWall)
+            {
+                Maze.Cells[cellPos.I, cellPos.J].Value = 1;
+                BrushCell(cellPos.I, cellPos.J, Brushes.Black);
+            }
+            else if (DrawMode == DrawMode.Delete)
+            {
+                Maze.Cells[cellPos.I, cellPos.J].Value = 0;
+                BrushCell(cellPos.I, cellPos.J, Brushes.White);
+            }
 
-            pnMaze.Invalidate();
+
+            //pnMaze.Invalidate();
+        }
+
+        private void pnMaze_MouseUp(object sender, MouseEventArgs e)
+        {
+            DrawGrid(MazeGraphics);
         }
 
         private void btnFind_Click(object sender, EventArgs e)
         {
-            aStart(Maze, heuristic);
+            ResetMaze();
+            aStart(Maze, heuristic);         
+        }
+
+        private void ResetMaze()
+        {
+            for (int i = 0; i < Maze.MazeI; i++)
+            {
+                for (int j = 0; j < Maze.MazeJ; j++)
+                {
+                    if (Maze.Cells[i, j].Value == 0)
+                        BrushCell(i, j, Brushes.White);
+                }
+            }
         }
 
         private void rbtDrawWall_CheckedChanged(object sender, EventArgs e)
@@ -186,14 +228,18 @@ namespace Visual
 
         private void reconstruct_path(Cell current)
         {
+            BrushCell(Maze.GoalCell.Position.I, Maze.GoalCell.Position.J, Brushes.Red);
             while (true)
             {
                 current = current.CameFrom;
                 if (current == Maze.StartCell)
                     break;
-                current.Value = 6;
+                //current.Value = 6;
+                BrushCell(current.Position.I, current.Position.J, Brushes.Yellow);
             }
-            pnMaze.Invalidate();
+            BrushCell(Maze.StartCell.Position.I, Maze.StartCell.Position.J, Brushes.SpringGreen);
+            DrawGrid(MazeGraphics);
+            //pnMaze.Invalidate();
         }
 
         private bool aStart(Maze maze, Heuristic her)
@@ -223,11 +269,16 @@ namespace Visual
                         reconstruct_path(current);
                         return true;
                     }
-                    if (current != maze.StartCell)
-                        current.Value = 5;
-                    pnMaze.Invalidate();
+
+                    //if (current != maze.StartCell)
+                    //    current.Value = 5;
+
+                    BrushCell(current.Position.I, current.Position.J, Brushes.Cyan);
+                    //BrushCell(MazeGraphics);
+                    //pnMaze.Invalidate();
                     openSet.Remove(current);
                     FindNeighbor(current);
+
                     foreach (var neughbor in current.Neighbors)
                     {
                         var tentative_gScore = current.gScore + 2;
@@ -238,11 +289,13 @@ namespace Visual
                             neughbor.fScore = neughbor.gScore + her(neughbor);
                             if (!Exists(openSet, neughbor))
                             {
-                                neughbor.Value = 4;
+                                //neughbor.Value = 4;
+                                BrushCell(neughbor.Position.I, neughbor.Position.J, Brushes.Pink);
+
                                 openSet.Add(neughbor);
                             }
                         }
-                        pnMaze.Invalidate();
+                        //pnMaze.Invalidate();
                     }
                 }
             }
@@ -278,9 +331,10 @@ namespace Visual
                 || Maze.Cells[current.Position.I + 1, current.Position.J].Value == 3))
                 current.Neighbors.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
 
-           
-                            
+
+
         }
+
 
         private List<Cell> MinfScore(List<Cell> open)
         {

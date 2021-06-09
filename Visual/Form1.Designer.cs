@@ -30,12 +30,12 @@ namespace Visual
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rbtDrawWall = new System.Windows.Forms.RadioButton();
-            this.rbtDrawStart = new System.Windows.Forms.RadioButton();
-            this.rbtDrawGoal = new System.Windows.Forms.RadioButton();
             this.rbtDelete = new System.Windows.Forms.RadioButton();
-            this.pnMaze = new Visual.MazeControl();
+            this.rbtDrawGoal = new System.Windows.Forms.RadioButton();
+            this.rbtDrawStart = new System.Windows.Forms.RadioButton();
+            this.rbtDrawWall = new System.Windows.Forms.RadioButton();
             this.btnFind = new System.Windows.Forms.Button();
+            this.pnMaze = new Visual.MazeControl();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,6 +52,39 @@ namespace Visual
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Draw";
             // 
+            // rbtDelete
+            // 
+            this.rbtDelete.AutoSize = true;
+            this.rbtDelete.Location = new System.Drawing.Point(30, 156);
+            this.rbtDelete.Name = "rbtDelete";
+            this.rbtDelete.Size = new System.Drawing.Size(70, 21);
+            this.rbtDelete.TabIndex = 0;
+            this.rbtDelete.Text = "Delete";
+            this.rbtDelete.UseVisualStyleBackColor = true;
+            this.rbtDelete.CheckedChanged += new System.EventHandler(this.rbtDelete_CheckedChanged);
+            // 
+            // rbtDrawGoal
+            // 
+            this.rbtDrawGoal.AutoSize = true;
+            this.rbtDrawGoal.Location = new System.Drawing.Point(30, 117);
+            this.rbtDrawGoal.Name = "rbtDrawGoal";
+            this.rbtDrawGoal.Size = new System.Drawing.Size(95, 21);
+            this.rbtDrawGoal.TabIndex = 0;
+            this.rbtDrawGoal.Text = "Draw Goal";
+            this.rbtDrawGoal.UseVisualStyleBackColor = true;
+            this.rbtDrawGoal.CheckedChanged += new System.EventHandler(this.rbtDrawGoal_CheckedChanged);
+            // 
+            // rbtDrawStart
+            // 
+            this.rbtDrawStart.AutoSize = true;
+            this.rbtDrawStart.Location = new System.Drawing.Point(30, 77);
+            this.rbtDrawStart.Name = "rbtDrawStart";
+            this.rbtDrawStart.Size = new System.Drawing.Size(95, 21);
+            this.rbtDrawStart.TabIndex = 0;
+            this.rbtDrawStart.Text = "Draw Start";
+            this.rbtDrawStart.UseVisualStyleBackColor = true;
+            this.rbtDrawStart.CheckedChanged += new System.EventHandler(this.rbtDrawStart_CheckedChanged);
+            // 
             // rbtDrawWall
             // 
             this.rbtDrawWall.AutoSize = true;
@@ -65,49 +98,6 @@ namespace Visual
             this.rbtDrawWall.UseVisualStyleBackColor = true;
             this.rbtDrawWall.CheckedChanged += new System.EventHandler(this.rbtDrawWall_CheckedChanged);
             // 
-            // rbtDrawStart
-            // 
-            this.rbtDrawStart.AutoSize = true;
-            this.rbtDrawStart.Location = new System.Drawing.Point(30, 77);
-            this.rbtDrawStart.Name = "rbtDrawStart";
-            this.rbtDrawStart.Size = new System.Drawing.Size(95, 21);
-            this.rbtDrawStart.TabIndex = 0;
-            this.rbtDrawStart.Text = "Draw Start";
-            this.rbtDrawStart.UseVisualStyleBackColor = true;
-            this.rbtDrawStart.CheckedChanged += new System.EventHandler(this.rbtDrawStart_CheckedChanged);
-            // 
-            // rbtDrawGoal
-            // 
-            this.rbtDrawGoal.AutoSize = true;
-            this.rbtDrawGoal.Location = new System.Drawing.Point(30, 117);
-            this.rbtDrawGoal.Name = "rbtDrawGoal";
-            this.rbtDrawGoal.Size = new System.Drawing.Size(95, 21);
-            this.rbtDrawGoal.TabIndex = 0;
-            this.rbtDrawGoal.Text = "Draw Goal";
-            this.rbtDrawGoal.UseVisualStyleBackColor = true;
-            this.rbtDrawGoal.CheckedChanged += new System.EventHandler(this.rbtDrawGoal_CheckedChanged);
-            // 
-            // rbtDelete
-            // 
-            this.rbtDelete.AutoSize = true;
-            this.rbtDelete.Location = new System.Drawing.Point(30, 156);
-            this.rbtDelete.Name = "rbtDelete";
-            this.rbtDelete.Size = new System.Drawing.Size(70, 21);
-            this.rbtDelete.TabIndex = 0;
-            this.rbtDelete.Text = "Delete";
-            this.rbtDelete.UseVisualStyleBackColor = true;
-            this.rbtDelete.CheckedChanged += new System.EventHandler(this.rbtDelete_CheckedChanged);
-            // 
-            // pnMaze
-            // 
-            this.pnMaze.Location = new System.Drawing.Point(12, 12);
-            this.pnMaze.Name = "pnMaze";
-            this.pnMaze.Size = new System.Drawing.Size(942, 692);
-            this.pnMaze.TabIndex = 0;
-            this.pnMaze.Paint += new System.Windows.Forms.PaintEventHandler(this.pnMaze_Paint);
-            this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
-            this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
-            // 
             // btnFind
             // 
             this.btnFind.Location = new System.Drawing.Point(990, 234);
@@ -118,10 +108,22 @@ namespace Visual
             this.btnFind.UseVisualStyleBackColor = true;
             this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
             // 
+            // pnMaze
+            // 
+            this.pnMaze.Location = new System.Drawing.Point(12, 12);
+            this.pnMaze.Name = "pnMaze";
+            this.pnMaze.Size = new System.Drawing.Size(942, 692);
+            this.pnMaze.TabIndex = 0;
+            this.pnMaze.Paint += new System.Windows.Forms.PaintEventHandler(this.pnMaze_Paint);
+            this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
+            this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
+            this.pnMaze.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseUp);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1229, 716);
             this.Controls.Add(this.btnFind);
             this.Controls.Add(this.groupBox1);
