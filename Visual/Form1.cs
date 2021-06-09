@@ -177,53 +177,8 @@ namespace Visual
 
         private void btnFind_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Maze.MazeI; i++)
-            {
-                for (int j = 0; j < Maze.MazeJ; j++)
-                {
-                    Console.Write(Maze.Cells[i, j].Value + " ");
-                }
-                Console.WriteLine();
-            }
-
-            if (Maze.StartCell == null || Maze.GoalCell == null)
-            {
-                MessageBox.Show("Chua ve diem dau hoac diem dich");
-                return;
-            }
-            RefreshMaze();
-            DrawGrid(MazeGraphics);
-            aStart(Maze, heuristic1);
-            //ThreadFind = new Thread(() => aStart(Maze, heuristic));
-            //ThreadFind.IsBackground = true;
-            //ThreadFind.Start();
-            //btnFind.Enabled = false;
-            //btnStop.Enabled = true;
-            //groupBox1.Enabled = false;
-        }
-
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-
-
-            ThreadFind.Abort();
-            btnFind.Enabled = true;
-            btnStop.Enabled = false;
-            groupBox1.Enabled = true;
-        }
-
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < Maze.MazeI; i++)
-            {
-                for (int j = 0; j < Maze.MazeJ; j++)
-                {
-                    Maze.Cells[i, j].Value = 0;
-                }
-            }
-
-            pnMaze.Invalidate();
-            DrawGrid(MazeGraphics);
+            ResetMaze();
+            aStart(Maze, heuristic);         
         }
 
         private void RefreshMaze()
@@ -314,8 +269,6 @@ namespace Visual
                     break;
                 //current.Value = 6;
                 BrushCell(current.Position.I, current.Position.J, Brushes.Yellow);
-                DrawGrid(MazeGraphics);
-                //Thread.Sleep(10);
             }
 
             DrawGrid(MazeGraphics);
@@ -355,12 +308,6 @@ namespace Visual
 
                     //if (current != maze.StartCell)
                     //    current.Value = 5;
-                    if (current != maze.StartCell)
-                    {
-                        BrushCell(current.Position.I, current.Position.J, Brushes.Cyan);
-                        DrawGrid(MazeGraphics);
-                        //Thread.Sleep(10);
-                    }
 
                     //BrushCell(MazeGraphics);
                     //pnMaze.Invalidate();
@@ -378,10 +325,7 @@ namespace Visual
                             if (!Exists(openSet, neughbor))
                             {
                                 //neughbor.Value = 4;
-                                if (neughbor != maze.GoalCell)
-                                    BrushCell(neughbor.Position.I, neughbor.Position.J, Brushes.Pink);
-                                DrawGrid(MazeGraphics);
-                                //Thread.Sleep(10);
+                                BrushCell(neughbor.Position.I, neughbor.Position.J, Brushes.Pink);
 
                                 openSet.Add(neughbor);
                             }
@@ -421,6 +365,7 @@ namespace Visual
             if (current.Position.I + 1 < Maze.MazeI && Maze.Cells[current.Position.I + 1, current.Position.J].Value != 1)
                 current.Neighbors.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
         }
+
 
         private List<Cell> MinfScore(List<Cell> open)
         {
