@@ -1,49 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Visual
+﻿namespace Visual
 {
     public class Maze
     {
         public readonly int MazeI, MazeJ;
         public Cell[,] Cells { get; set; }
 
-        private Cell startCell;
-        public Cell StartCell 
+        private CellPositon startPos;
+        public CellPositon StartPosition
         {
-            get => startCell;
-            set
+            get => startPos;
+            private set
             {
-                if(startCell != null)
+                if (startPos != null)
                 {
-                    startCell.Value = 0;
+                    Cells[startPos.I, startPos.J].Value = CellValue.None;
                 }
-                startCell = value;
-                if (startCell == null)
-                    return;
-                startCell.Value = 2;
+
+                Cells[value.I, value.J].Value = CellValue.Start;
+                startPos = value;
             }
         }
 
-        private Cell goalCell;
-        public Cell GoalCell 
+        private CellPositon goalPos;
+        public CellPositon GoalPosition
         {
-            get => goalCell;
-            set
+            get => goalPos;
+            private set
             {
-                if(goalCell != null)
+                if (goalPos != null)
                 {
-                    goalCell.Value = 0;
+                    Cells[goalPos.I, goalPos.J].Value = CellValue.None;
                 }
-
-                goalCell = value;
-                if (goalCell == null)
-                    return;
-                goalCell.Value = 3;
+                Cells[value.I, value.J].Value = CellValue.Goal;
+                goalPos = value;
             }
+        }
+
+        public void SetCellValue(CellPositon position, CellValue value)
+        {
+            if (startPos != null)
+            {
+                if (position.I == startPos.I && position.J == startPos.J && value != CellValue.Start)
+                {
+                    startPos = null;
+                }
+            }
+            else if (goalPos != null)
+            {
+                if (position.I == goalPos.I && position.J == goalPos.J && value != CellValue.Goal)
+                {
+                    goalPos = null;
+                }
+            }
+
+            if (value == CellValue.Start)
+            {
+                StartPosition = position;
+            }
+            else if (value == CellValue.Goal)
+            {
+                GoalPosition = position;
+            }
+
+            Cells[position.I, position.J].Value = value;
         }
 
         public Maze(int width, int height)
@@ -64,9 +83,9 @@ namespace Visual
                 {
                     Cells[i, j] = new Cell()
                     {
-                        Value = 0,
-                        Position = new CellPositon { I = i, J = j}
-                        
+                        Value = CellValue.None,
+                        Position = new CellPositon { I = i, J = j }
+
                     };
                 }
             }
@@ -76,7 +95,7 @@ namespace Visual
 
     public class Cell
     {
-        public int Value { get; set; }
+        public CellValue Value { get; set; }
         // điểm g
         public int gScore { get; set; }
         // f= g + h
@@ -92,6 +111,16 @@ namespace Visual
             //Neighbors = new List<Cell>();
         }
 
+    }
+
+    public enum CellValue
+    {
+        None,
+        Goal,
+        Start,
+        Wall,
+        Neighbor,
+        Visited
     }
 
     public class CellPositon

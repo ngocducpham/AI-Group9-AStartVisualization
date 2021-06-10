@@ -29,6 +29,7 @@ namespace Visual
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rbtDelete = new System.Windows.Forms.RadioButton();
             this.rbtDrawGoal = new System.Windows.Forms.RadioButton();
@@ -37,12 +38,16 @@ namespace Visual
             this.btnFind = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.tbrSleep = new System.Windows.Forms.TrackBar();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.pnMaze = new Visual.MazeControl();
+            this.total = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbrSleep)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -106,7 +111,7 @@ namespace Visual
             // 
             // btnFind
             // 
-            this.btnFind.Location = new System.Drawing.Point(990, 439);
+            this.btnFind.Location = new System.Drawing.Point(990, 493);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(75, 23);
             this.btnFind.TabIndex = 2;
@@ -117,7 +122,7 @@ namespace Visual
             // btnStop
             // 
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(990, 482);
+            this.btnStop.Location = new System.Drawing.Point(990, 536);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 23);
             this.btnStop.TabIndex = 3;
@@ -137,6 +142,28 @@ namespace Visual
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Heuristic";
             // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point(30, 106);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(96, 21);
+            this.radioButton3.TabIndex = 0;
+            this.radioButton3.Text = "Heuristic 3";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(30, 69);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(96, 21);
+            this.radioButton2.TabIndex = 0;
+            this.radioButton2.Text = "Heuristic 2";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            // 
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
@@ -150,30 +177,21 @@ namespace Visual
             this.radioButton1.UseVisualStyleBackColor = true;
             this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
-            // radioButton2
+            // tbrSleep
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(30, 69);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(96, 21);
-            this.radioButton2.TabIndex = 0;
-            this.radioButton2.Text = "Heuristic 2";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
-            // 
-            // radioButton3
-            // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(30, 106);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(96, 21);
-            this.radioButton3.TabIndex = 0;
-            this.radioButton3.Text = "Heuristic 3";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            this.tbrSleep.LargeChange = 1;
+            this.tbrSleep.Location = new System.Drawing.Point(961, 399);
+            this.tbrSleep.Maximum = 5;
+            this.tbrSleep.Minimum = 1;
+            this.tbrSleep.Name = "tbrSleep";
+            this.tbrSleep.Size = new System.Drawing.Size(256, 56);
+            this.tbrSleep.TabIndex = 1;
+            this.tbrSleep.Value = 1;
+            this.tbrSleep.Scroll += new System.EventHandler(this.tbrSleep_Scroll);
             // 
             // pnMaze
             // 
+            this.pnMaze.BackColor = System.Drawing.Color.White;
             this.pnMaze.Location = new System.Drawing.Point(12, 12);
             this.pnMaze.Name = "pnMaze";
             this.pnMaze.Size = new System.Drawing.Size(942, 692);
@@ -183,12 +201,22 @@ namespace Visual
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             this.pnMaze.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseUp);
             // 
+            // total
+            // 
+            this.total.Location = new System.Drawing.Point(977, 596);
+            this.total.Name = "total";
+            this.total.Size = new System.Drawing.Size(240, 23);
+            this.total.TabIndex = 6;
+            this.total.Text = "label1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1229, 716);
+            this.Controls.Add(this.total);
+            this.Controls.Add(this.tbrSleep);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnFind);
@@ -201,7 +229,9 @@ namespace Visual
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbrSleep)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -219,6 +249,9 @@ namespace Visual
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.TrackBar tbrSleep;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label total;
     }
 }
 
