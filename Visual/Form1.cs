@@ -38,6 +38,8 @@ namespace Visual
 
         private int Sleep;
 
+        private int TimeCouter = 0;
+
         public Form1()
         {
             InitializeComponent();
@@ -150,8 +152,11 @@ namespace Visual
 
         private void btnFind_Click(object sender, EventArgs e)
         {
-            if(Maze.StartPosition == null || Maze.GoalPosition == null)
+            if (Maze.StartPosition == null || Maze.GoalPosition == null)
+                MessageBox.Show("Chua chon diem bat dau hoac diem dich");
 
+            TimeCouter = 0;
+            timer1.Start();
             groupBox1.Enabled = false;
             groupBox2.Enabled = false;
             btnFind.Enabled = false;
@@ -248,6 +253,7 @@ namespace Visual
         private void reconstruct_path(Cell current)
         {
             int i = 0;
+            timer1.Stop();
             while (true)
             {
                 current = current.CameFrom;
@@ -258,7 +264,7 @@ namespace Visual
                 BrushCell(current.Position.I, current.Position.J, Brushes.Yellow);
                 Thread.Sleep(Sleep);
             }
-            total.Text = "Total: " + i.ToString();
+            lbStep.Text = "Step: " + i.ToString();
             DrawGrid(MazeGraphics);
             btnFind.Enabled = true;
             btnStop.Enabled = false;
@@ -301,7 +307,7 @@ namespace Visual
                         BrushCell(current.Position.I, current.Position.J, Brushes.Pink);
                         current.Value = CellValue.Visited;
                     }
-                    
+
                     Thread.Sleep(Sleep);
 
                     openSet.Remove(current);
@@ -336,6 +342,7 @@ namespace Visual
             groupBox1.Enabled = true;
             groupBox2.Enabled = true;
             tbrSleep.Enabled = true;
+            timer1.Stop();
             MessageBox.Show("Khong tim duoc");
             return false;
         }
@@ -359,14 +366,14 @@ namespace Visual
                     nei.Add(Maze.Cells[current.Position.I, current.Position.J + 1]);
 
             if (current.Position.I - 1 >= 0)
-                if(Maze.Cells[current.Position.I - 1, current.Position.J].Value != CellValue.Wall)
-                nei.Add(Maze.Cells[current.Position.I - 1, current.Position.J]);
+                if (Maze.Cells[current.Position.I - 1, current.Position.J].Value != CellValue.Wall)
+                    nei.Add(Maze.Cells[current.Position.I - 1, current.Position.J]);
 
             if (current.Position.J - 1 >= 0)
                 if (Maze.Cells[current.Position.I, current.Position.J - 1].Value != CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I, current.Position.J - 1]);
 
-            if (current.Position.I + 1 < Maze.MazeI )
+            if (current.Position.I + 1 < Maze.MazeI)
                 if (Maze.Cells[current.Position.I + 1, current.Position.J].Value != CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
 
@@ -395,11 +402,13 @@ namespace Visual
 
         private void btnStop_Click(object sender, EventArgs e)
         {
+            timer1.Stop();
             groupBox1.Enabled = true;
             groupBox2.Enabled = true;
             btnFind.Enabled = true;
             btnStop.Enabled = false;
             tbrSleep.Enabled = true;
+            TimeCouter = 0;
             ThreadFind.Abort();
         }
 
@@ -411,6 +420,28 @@ namespace Visual
         private void pnMaze_Paint(object sender, PaintEventArgs e)
         {
             DrawGrid(e.Graphics);
+        }
+
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            TimeCouter++;
+            lbTime.Text = "Time: " + TimeCouter.ToString();
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Maze.MazeI; i++)
+            {
+                for (int j = 0; j < Maze.MazeJ; j++)
+                {
+                    if (Maze.Cells[i, j].Value != CellValue.None)
+                    {
+                        Maze.SetCellValue(new CellPositon { I = i, J = j }, CellValue.None);
+                        BrushCell(i, j, Brushes.White);
+                    }
+                }
+            }
         }
 
         private List<Cell> MinfScore(List<Cell> open)

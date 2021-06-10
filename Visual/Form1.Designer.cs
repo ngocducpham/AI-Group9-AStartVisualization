@@ -43,8 +43,11 @@ namespace Visual
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.tbrSleep = new System.Windows.Forms.TrackBar();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.lbStep = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.lbTime = new System.Windows.Forms.Label();
             this.pnMaze = new Visual.MazeControl();
-            this.total = new System.Windows.Forms.Label();
+            this.btnClear = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbrSleep)).BeginInit();
@@ -111,7 +114,7 @@ namespace Visual
             // 
             // btnFind
             // 
-            this.btnFind.Location = new System.Drawing.Point(990, 493);
+            this.btnFind.Location = new System.Drawing.Point(980, 461);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(75, 23);
             this.btnFind.TabIndex = 2;
@@ -122,7 +125,7 @@ namespace Visual
             // btnStop
             // 
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(990, 536);
+            this.btnStop.Location = new System.Drawing.Point(980, 504);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 23);
             this.btnStop.TabIndex = 3;
@@ -189,6 +192,27 @@ namespace Visual
             this.tbrSleep.Value = 1;
             this.tbrSleep.Scroll += new System.EventHandler(this.tbrSleep_Scroll);
             // 
+            // lbStep
+            // 
+            this.lbStep.Location = new System.Drawing.Point(977, 596);
+            this.lbStep.Name = "lbStep";
+            this.lbStep.Size = new System.Drawing.Size(240, 23);
+            this.lbStep.TabIndex = 6;
+            this.lbStep.Text = "Step:";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // lbTime
+            // 
+            this.lbTime.Location = new System.Drawing.Point(977, 633);
+            this.lbTime.Name = "lbTime";
+            this.lbTime.Size = new System.Drawing.Size(240, 28);
+            this.lbTime.TabIndex = 7;
+            this.lbTime.Text = "Time:";
+            // 
             // pnMaze
             // 
             this.pnMaze.BackColor = System.Drawing.Color.White;
@@ -201,13 +225,15 @@ namespace Visual
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             this.pnMaze.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseUp);
             // 
-            // total
+            // btnClear
             // 
-            this.total.Location = new System.Drawing.Point(977, 596);
-            this.total.Name = "total";
-            this.total.Size = new System.Drawing.Size(240, 23);
-            this.total.TabIndex = 6;
-            this.total.Text = "label1";
+            this.btnClear.Location = new System.Drawing.Point(980, 546);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 8;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // Form1
             // 
@@ -215,7 +241,9 @@ namespace Visual
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1229, 716);
-            this.Controls.Add(this.total);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.lbTime);
+            this.Controls.Add(this.lbStep);
             this.Controls.Add(this.tbrSleep);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnStop);
@@ -251,7 +279,10 @@ namespace Visual
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TrackBar tbrSleep;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label total;
+        private System.Windows.Forms.Label lbStep;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label lbTime;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 

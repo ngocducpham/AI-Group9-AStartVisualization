@@ -127,5 +127,38 @@
     {
         public int I { get; set; }
         public int J { get; set; }
+
+        public static bool operator ==(CellPositon a, CellPositon b)
+        {
+            if(a is null)
+            {
+                return b is null;
+            }
+
+            return a.Equals(b);
+            //return (a.I == b.I && a.J == b.J);
+        }
+
+        public static bool operator !=(CellPositon a, CellPositon b)
+        {
+            //if (b == null)
+            //{
+            //    return a is null;
+            //}
+            //return (a.I != b.I || a.J != b.J);
+            return !(a==b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null)
+                return false;
+            return obj is CellPositon b ? (I == b.I && J == b.J) : false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (I, J).GetHashCode();
+        }
     }
 }
