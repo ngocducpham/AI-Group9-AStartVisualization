@@ -162,6 +162,7 @@ namespace Visual
             btnFind.Enabled = false;
             btnStop.Enabled = true;
             tbrSleep.Enabled = false;
+            btnClear.Enabled = false;
             RefreshMaze();
             Sleep = tbrSleep.Value * 20;
             ThreadFind = new Thread(() => aStart(Maze, heur));
@@ -271,6 +272,7 @@ namespace Visual
             groupBox1.Enabled = true;
             groupBox2.Enabled = true;
             tbrSleep.Enabled = true;
+            btnClear.Enabled = true;
             //pnMaze.Invalidate();
         }
 
@@ -342,6 +344,7 @@ namespace Visual
             groupBox1.Enabled = true;
             groupBox2.Enabled = true;
             tbrSleep.Enabled = true;
+            btnClear.Enabled = true;
             timer1.Stop();
             MessageBox.Show("Khong tim duoc");
             return false;
@@ -408,7 +411,7 @@ namespace Visual
             btnFind.Enabled = true;
             btnStop.Enabled = false;
             tbrSleep.Enabled = true;
-            TimeCouter = 0;
+            btnClear.Enabled = true;
             ThreadFind.Abort();
         }
 
