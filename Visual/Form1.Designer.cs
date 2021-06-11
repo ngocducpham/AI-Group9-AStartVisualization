@@ -30,6 +30,7 @@ namespace Visual
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rbtDelete = new System.Windows.Forms.RadioButton();
             this.rbtDrawGoal = new System.Windows.Forms.RadioButton();
@@ -293,6 +294,7 @@ namespace Visual
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pnMaze);
             this.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AStart Visualization";
