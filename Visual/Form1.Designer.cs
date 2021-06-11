@@ -53,9 +53,18 @@ namespace Visual
             this.label2 = new System.Windows.Forms.Label();
             this.txtCellSize = new System.Windows.Forms.TextBox();
             this.pnMaze = new Visual.MazeControl();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbrSleep)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -64,7 +73,7 @@ namespace Visual
             this.groupBox1.Controls.Add(this.rbtDrawGoal);
             this.groupBox1.Controls.Add(this.rbtDrawStart);
             this.groupBox1.Controls.Add(this.rbtDrawWall);
-            this.groupBox1.Location = new System.Drawing.Point(1002, 47);
+            this.groupBox1.Location = new System.Drawing.Point(1002, 71);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(196, 158);
             this.groupBox1.TabIndex = 1;
@@ -74,7 +83,7 @@ namespace Visual
             // rbtDelete
             // 
             this.rbtDelete.AutoSize = true;
-            this.rbtDelete.Location = new System.Drawing.Point(7, 122);
+            this.rbtDelete.Location = new System.Drawing.Point(13, 122);
             this.rbtDelete.Name = "rbtDelete";
             this.rbtDelete.Size = new System.Drawing.Size(69, 23);
             this.rbtDelete.TabIndex = 0;
@@ -85,7 +94,7 @@ namespace Visual
             // rbtDrawGoal
             // 
             this.rbtDrawGoal.AutoSize = true;
-            this.rbtDrawGoal.Location = new System.Drawing.Point(7, 93);
+            this.rbtDrawGoal.Location = new System.Drawing.Point(13, 93);
             this.rbtDrawGoal.Name = "rbtDrawGoal";
             this.rbtDrawGoal.Size = new System.Drawing.Size(94, 23);
             this.rbtDrawGoal.TabIndex = 0;
@@ -96,7 +105,7 @@ namespace Visual
             // rbtDrawStart
             // 
             this.rbtDrawStart.AutoSize = true;
-            this.rbtDrawStart.Location = new System.Drawing.Point(6, 64);
+            this.rbtDrawStart.Location = new System.Drawing.Point(13, 64);
             this.rbtDrawStart.Name = "rbtDrawStart";
             this.rbtDrawStart.Size = new System.Drawing.Size(95, 23);
             this.rbtDrawStart.TabIndex = 0;
@@ -108,7 +117,7 @@ namespace Visual
             // 
             this.rbtDrawWall.AutoSize = true;
             this.rbtDrawWall.Checked = true;
-            this.rbtDrawWall.Location = new System.Drawing.Point(6, 35);
+            this.rbtDrawWall.Location = new System.Drawing.Point(13, 35);
             this.rbtDrawWall.Name = "rbtDrawWall";
             this.rbtDrawWall.Size = new System.Drawing.Size(91, 23);
             this.rbtDrawWall.TabIndex = 0;
@@ -119,7 +128,7 @@ namespace Visual
             // 
             // btnFind
             // 
-            this.btnFind.Location = new System.Drawing.Point(1002, 423);
+            this.btnFind.Location = new System.Drawing.Point(1002, 447);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(196, 39);
             this.btnFind.TabIndex = 2;
@@ -130,7 +139,7 @@ namespace Visual
             // btnStop
             // 
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(1002, 468);
+            this.btnStop.Location = new System.Drawing.Point(1002, 492);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(196, 39);
             this.btnStop.TabIndex = 3;
@@ -143,7 +152,7 @@ namespace Visual
             this.groupBox2.Controls.Add(this.radioButton3);
             this.groupBox2.Controls.Add(this.radioButton2);
             this.groupBox2.Controls.Add(this.radioButton1);
-            this.groupBox2.Location = new System.Drawing.Point(1002, 211);
+            this.groupBox2.Location = new System.Drawing.Point(1002, 235);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(196, 136);
             this.groupBox2.TabIndex = 5;
@@ -153,22 +162,22 @@ namespace Visual
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(6, 92);
+            this.radioButton3.Location = new System.Drawing.Point(13, 92);
             this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(144, 23);
+            this.radioButton3.Size = new System.Drawing.Size(91, 23);
             this.radioButton3.TabIndex = 0;
-            this.radioButton3.Text = "Euclidean Heuristic";
+            this.radioButton3.Text = "Euclidean ";
             this.radioButton3.UseVisualStyleBackColor = true;
             this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(6, 63);
+            this.radioButton2.Location = new System.Drawing.Point(13, 63);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(141, 23);
+            this.radioButton2.Size = new System.Drawing.Size(84, 23);
             this.radioButton2.TabIndex = 0;
-            this.radioButton2.Text = "Diagonal Heuristic";
+            this.radioButton2.Text = "Diagonal";
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
@@ -176,19 +185,19 @@ namespace Visual
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(6, 34);
+            this.radioButton1.Location = new System.Drawing.Point(13, 34);
             this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(155, 23);
+            this.radioButton1.Size = new System.Drawing.Size(98, 23);
             this.radioButton1.TabIndex = 0;
             this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Manhattan Heuristic";
+            this.radioButton1.Text = "Manhattan";
             this.radioButton1.UseVisualStyleBackColor = true;
             this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // tbrSleep
             // 
             this.tbrSleep.LargeChange = 1;
-            this.tbrSleep.Location = new System.Drawing.Point(1050, 361);
+            this.tbrSleep.Location = new System.Drawing.Point(1050, 385);
             this.tbrSleep.Maximum = 5;
             this.tbrSleep.Name = "tbrSleep";
             this.tbrSleep.Size = new System.Drawing.Size(148, 56);
@@ -197,7 +206,7 @@ namespace Visual
             // 
             // lbStep
             // 
-            this.lbStep.Location = new System.Drawing.Point(998, 651);
+            this.lbStep.Location = new System.Drawing.Point(998, 675);
             this.lbStep.Name = "lbStep";
             this.lbStep.Size = new System.Drawing.Size(200, 24);
             this.lbStep.TabIndex = 6;
@@ -210,7 +219,7 @@ namespace Visual
             // 
             // lbTime
             // 
-            this.lbTime.Location = new System.Drawing.Point(998, 687);
+            this.lbTime.Location = new System.Drawing.Point(998, 711);
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(200, 30);
             this.lbTime.TabIndex = 7;
@@ -218,7 +227,7 @@ namespace Visual
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(1002, 558);
+            this.btnClear.Location = new System.Drawing.Point(1002, 582);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(196, 39);
             this.btnClear.TabIndex = 8;
@@ -229,7 +238,7 @@ namespace Visual
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(998, 361);
+            this.label1.Location = new System.Drawing.Point(998, 385);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(46, 19);
             this.label1.TabIndex = 9;
@@ -237,7 +246,7 @@ namespace Visual
             // 
             // btnClearStep
             // 
-            this.btnClearStep.Location = new System.Drawing.Point(1002, 513);
+            this.btnClearStep.Location = new System.Drawing.Point(1002, 537);
             this.btnClearStep.Name = "btnClearStep";
             this.btnClearStep.Size = new System.Drawing.Size(196, 39);
             this.btnClearStep.TabIndex = 8;
@@ -248,7 +257,7 @@ namespace Visual
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(998, 19);
+            this.label2.Location = new System.Drawing.Point(998, 43);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 19);
             this.label2.TabIndex = 10;
@@ -256,7 +265,7 @@ namespace Visual
             // 
             // txtCellSize
             // 
-            this.txtCellSize.Location = new System.Drawing.Point(1065, 16);
+            this.txtCellSize.Location = new System.Drawing.Point(1065, 40);
             this.txtCellSize.Name = "txtCellSize";
             this.txtCellSize.Size = new System.Drawing.Size(133, 25);
             this.txtCellSize.TabIndex = 11;
@@ -266,7 +275,7 @@ namespace Visual
             // pnMaze
             // 
             this.pnMaze.BackColor = System.Drawing.Color.White;
-            this.pnMaze.Location = new System.Drawing.Point(10, 13);
+            this.pnMaze.Location = new System.Drawing.Point(10, 40);
             this.pnMaze.Name = "pnMaze";
             this.pnMaze.Size = new System.Drawing.Size(982, 735);
             this.pnMaze.TabIndex = 0;
@@ -274,12 +283,84 @@ namespace Visual
             this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1210, 28);
+            this.menuStrip1.TabIndex = 12;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveToolStripMenuItem,
+            this.openToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + S";
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem,
+            this.viewHelpToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
+            this.aboutToolStripMenuItem.Text = "About";
+            // 
+            // viewHelpToolStripMenuItem
+            // 
+            this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
+            this.viewHelpToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + F1";
+            this.viewHelpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
+            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(225, 26);
+            this.viewHelpToolStripMenuItem.Text = "View Help";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + O";
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt + F4";
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1210, 761);
+            this.ClientSize = new System.Drawing.Size(1210, 784);
             this.Controls.Add(this.txtCellSize);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -293,8 +374,11 @@ namespace Visual
             this.Controls.Add(this.btnFind);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pnMaze);
+            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AStart Visualization";
@@ -304,6 +388,8 @@ namespace Visual
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbrSleep)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -333,6 +419,14 @@ namespace Visual
         private System.Windows.Forms.Button btnClearStep;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtCellSize;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }
 

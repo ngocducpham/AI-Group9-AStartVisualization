@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -111,7 +112,7 @@ namespace Visual
                         g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == CellValue.Wall)
                         g.FillRectangle(Brushes.Black, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-                    else if(Maze.Cells[i, j].Value == CellValue.Path)
+                    else if (Maze.Cells[i, j].Value == CellValue.Path)
                         g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                 }
             }
@@ -173,7 +174,7 @@ namespace Visual
         {
             if (Maze.StartPosition == null || Maze.GoalPosition == null)
             {
-                MessageBox.Show("Chưa chọn điểm bắt đầu, kết thúc","Lỗi!!",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show("Chưa chọn điểm bắt đầu, kết thúc", "Lỗi!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -262,7 +263,7 @@ namespace Visual
 
         private void tbrSleep_Scroll(object sender, EventArgs e)
         {
-            toolTip1.SetToolTip(tbrSleep, (tbrSleep.Value * 20).ToString() +" milli seconds");
+            toolTip1.SetToolTip(tbrSleep, (tbrSleep.Value * 20).ToString() + " milli seconds");
             Sleep = tbrSleep.Value * 20;
         }
 
@@ -292,6 +293,100 @@ namespace Visual
             }
 
             pnMaze.Invalidate();
+        }
+
+        #endregion
+
+        #region Menu Event
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog()
+            {
+                FileName = "Maze.maz",
+                DefaultExt = "maz",
+                Filter = "Maze (*.maz)|*.maz",
+                RestoreDirectory = true,
+                CheckPathExists = true,
+                Title = "Save Maze"
+            };
+
+            if (saveDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            // cell_size mazeI mazeJ \n data
+            string saveData = $"{CELL_SIZE}\n{Maze.MazeI}\n{Maze.MazeJ}\n";
+
+            for (int i = 0; i < Maze.MazeI; i++)
+            {
+                for (int j = 0; j < Maze.MazeJ; j++)
+                {
+                    if ((int)Maze.Cells[i, j].Value > (int)CellValue.Wall)
+                        saveData += "0";
+                    else
+                        saveData += ((int)Maze.Cells[i, j].Value).ToString();
+
+                    if (i != Maze.MazeI - 1 || j != Maze.MazeJ - 1)
+                        saveData += "\n";
+                }
+            }
+
+            try
+            {
+                File.WriteAllText(saveDialog.FileName, saveData);
+            }
+            catch
+            {
+                MessageBox.Show("Không thể lưu được file", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                DefaultExt = "maz",
+                Filter = "Maze (*.maz)|*.maz",
+                RestoreDirectory = true,
+                CheckPathExists = true,
+                Title = "Open Maze"
+            };
+
+            if (openDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                string[] fileContents = File.ReadAllLines(openDialog.FileName);
+
+                CELL_SIZE = int.Parse(fileContents[0]);
+                Maze = new Maze(int.Parse(fileContents[2]), int.Parse(fileContents[1]));
+
+                int line = 3;
+                for (int i = 0; i < Maze.MazeI; i++)
+                {
+                    for (int j = 0; j < Maze.MazeJ; j++)
+                    {
+                        if (fileContents[line] != "0")
+                        {
+                            Maze.SetCellValue(new CellPositon { I = i, J = j }, (CellValue)int.Parse(fileContents[line]));
+                        }
+                        line++;
+                    }
+                }
+
+                txtCellSize.Text = fileContents[0];
+                pnMaze.Invalidate();
+            }
+            catch
+            {
+                MessageBox.Show("Không thể mở được file", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         #endregion
@@ -344,7 +439,7 @@ namespace Visual
                     pnMaze.Invalidate();
                     Thread.Sleep(Sleep);
                 }
-                
+
             }
 
             lbStep.Text = "Step: " + i.ToString();
@@ -395,7 +490,7 @@ namespace Visual
                         current.Value = CellValue.Visited;
                     }
 
-                   
+
                     Thread.Sleep(Sleep);
 
                     openSet.Remove(current);
@@ -435,7 +530,7 @@ namespace Visual
             btnClear.Enabled = true;
             txtCellSize.Enabled = true;
             timer1.Stop();
-            MessageBox.Show("Không tìm thấy đường đi", "AStart Visualization",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+            MessageBox.Show("Không tìm thấy đường đi", "AStart Visualization", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
 
@@ -471,7 +566,7 @@ namespace Visual
 
             return nei;
         }
-        
+
 
         private List<Cell> MinfScore(List<Cell> open)
         {
@@ -499,7 +594,6 @@ namespace Visual
         #endregion
 
         #region Helper
-
         // dùng cho vòng lặp
         private CellPositon ConvertToIJ(Point location)
         {
@@ -510,31 +604,29 @@ namespace Visual
         {
             int cellSize;
 
-            if(e.KeyCode == Keys.Enter && int.TryParse(txtCellSize.Text,out cellSize))
+            if (e.KeyCode == Keys.Enter && int.TryParse(txtCellSize.Text, out cellSize))
             {
                 if (cellSize == 0 || cellSize == 1)
                 {
                     MessageBox.Show("Chơi vậy lấy gì vẽ (╬▔皿▔)╯");
                     return;
                 }
-                else if(cellSize > 1 && cellSize < 10)
+                else if (cellSize > 1 && cellSize < 10)
                 {
                     MessageBox.Show("Eyyy, mắt sáng đó (⓿_⓿)");
                 }
-                
+
                 CELL_SIZE = cellSize;
                 InitMaze();
                 pnMaze.Invalidate();
             }
         }
 
-
         // dùng cho vẽ
         private Point ConvertToXY(int i, int j)
         {
             return new Point { Y = i * CELL_SIZE, X = j * CELL_SIZE };
         }
-
         #endregion
     }
 
