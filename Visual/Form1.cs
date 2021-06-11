@@ -393,6 +393,12 @@ namespace Visual
 
         private double ManhattanHeuristic(Cell current)
         {
+            /*
+             dx = abs(node.x - goal.x)
+             dy = abs(node.y - goal.y)
+             h  = dx + dy
+             */
+
             return Math.Abs(current.Position.I - Maze.GoalPosition.I) + Math.Abs(current.Position.J - Maze.GoalPosition.J);
         }
 
@@ -401,7 +407,7 @@ namespace Visual
             /*
             dx = abs(current_cell.x – goal.x)
             dy = abs(current_cell.y – goal.y) 
-            h = D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
+            h  = D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
             */
 
             Point posCur = ConvertToXY(current.Position.I, current.Position.J);
@@ -415,6 +421,12 @@ namespace Visual
 
         private double EuclideanHeuristic(Cell current)
         {
+            /*
+             dx = abs(node.x - goal.x)
+             dy = abs(node.y - goal.y)
+             h  = sqrt(dx * dx + dy * dy)
+             */
+
             Point posCur = ConvertToXY(current.Position.I, current.Position.J);
             Point posGoal = ConvertToXY(Maze.GoalPosition.I, Maze.GoalPosition.J);
 
