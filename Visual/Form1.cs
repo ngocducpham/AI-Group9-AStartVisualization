@@ -62,6 +62,8 @@ namespace Visual
 
         }
 
+        #region Paint
+
         private void DrawGrid(Graphics g)
         {
             int top = 0, left = 0;
@@ -90,6 +92,37 @@ namespace Visual
             MazeGraphics.DrawLine(Pens.DarkSlateGray, cellPos.X, cellPos.Y, cellPos.X, cellPos.Y + CELL_SIZE);
         }
 
+        private void pnMaze_Paint(object sender, PaintEventArgs e)
+        {
+            RePaintCell(e.Graphics);
+            DrawGrid(e.Graphics);
+        }
+
+        private void RePaintCell(Graphics g)
+        {
+            Point cellPos;
+
+            for (int i = 0; i < Maze.MazeI; i++)
+            {
+                for (int j = 0; j < Maze.MazeJ; j++)
+                {
+                    cellPos = ConvertToXY(i, j);
+                    if (Maze.Cells[i, j].Value == CellValue.Goal)
+                        g.FillRectangle(Brushes.Red, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Maze.Cells[i, j].Value == CellValue.Start)
+                        g.FillRectangle(Brushes.SpringGreen, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Maze.Cells[i, j].Value == CellValue.Neighbor)
+                        g.FillRectangle(Brushes.Aqua, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Maze.Cells[i, j].Value == CellValue.Visited)
+                        g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if (Maze.Cells[i, j].Value == CellValue.Wall)
+                        g.FillRectangle(Brushes.Black, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                }
+            }
+        }
+        #endregion
+
+        #region Maze Mouse Event
 
         private void pnMaze_MouseDown(object sender, MouseEventArgs e)
         {
@@ -144,24 +177,20 @@ namespace Visual
             }
         }
 
-        private void pnMaze_Paint(object sender, PaintEventArgs e)
-        {
-            DrawGrid(e.Graphics);
-            pnMaze.Paint -= pnMaze_Paint;
-        }
+        #endregion
 
-
-        private void pnMaze_MouseUp(object sender, MouseEventArgs e)
-        {
-            //DrawGrid(MazeGraphics);
-        }
+        #region Control Event
 
         private void btnFind_Click(object sender, EventArgs e)
         {
             if (Maze.StartPosition == null || Maze.GoalPosition == null)
+            {
                 MessageBox.Show("Chua chon diem bat dau hoac diem dich");
+                return;
+            }
 
             TimeCouter = 0;
+            lbTime.Text = "Time: 0 second";
             timer1.Start();
             groupBox1.Enabled = false;
             groupBox2.Enabled = false;
@@ -169,14 +198,14 @@ namespace Visual
             btnStop.Enabled = true;
             tbrSleep.Enabled = false;
             btnClear.Enabled = false;
-            RefreshMaze();
+            ClearFindStep();
             Sleep = tbrSleep.Value * 20;
             ThreadFind = new Thread(() => aStart(Maze, heur));
             ThreadFind.IsBackground = true;
             ThreadFind.Start();
         }
 
-        private void RefreshMaze()
+        private void ClearFindStep()
         {
             for (int i = 0; i < Maze.MazeI; i++)
             {
@@ -185,10 +214,10 @@ namespace Visual
                     if (Maze.Cells[i, j].Value > CellValue.Wall)
                     {
                         Maze.SetCellValue(new CellPositon { I = i, J = j }, CellValue.None);
-                        BrushCell(i, j, Brushes.White);
                     }
                 }
             }
+            pnMaze.Invalidate();
         }
 
         private void rbtDrawWall_CheckedChanged(object sender, EventArgs e)
@@ -211,18 +240,59 @@ namespace Visual
             DrawMode = DrawMode.Delete;
         }
 
-        #region Helper
-
-        // dùng cho vòng lặp
-        private CellPositon ConvertToIJ(Point location)
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            return new CellPositon { I = location.Y / CELL_SIZE, J = location.X / CELL_SIZE };
+            heur = heuristic1;
         }
 
-        // dùng cho vẽ
-        private Point ConvertToXY(int i, int j)
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            return new Point { Y = i * CELL_SIZE, X = j * CELL_SIZE };
+            heur = heuristic2;
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            heur = heuristic3;
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            groupBox1.Enabled = true;
+            groupBox2.Enabled = true;
+            btnFind.Enabled = true;
+            btnStop.Enabled = false;
+            tbrSleep.Enabled = true;
+            btnClear.Enabled = true;
+            ThreadFind.Abort();
+        }
+
+        private void tbrSleep_Scroll(object sender, EventArgs e)
+        {
+            toolTip1.SetToolTip(tbrSleep, (tbrSleep.Value * 20).ToString() +" milli seconds");
+        }
+
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            TimeCouter++;
+            lbTime.Text = "Time: " + TimeCouter.ToString() + " seconds";
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Maze.MazeI; i++)
+            {
+                for (int j = 0; j < Maze.MazeJ; j++)
+                {
+                    if (Maze.Cells[i, j].Value != CellValue.None)
+                    {
+                        Maze.SetCellValue(new CellPositon { I = i, J = j }, CellValue.None);
+                    }
+                }
+            }
+
+            pnMaze.Invalidate();
         }
 
         #endregion
@@ -369,82 +439,24 @@ namespace Visual
             List<Cell> nei = new List<Cell>();
 
             if (current.Position.J + 1 < Maze.MazeJ)
-                if (Maze.Cells[current.Position.I, current.Position.J + 1].Value != CellValue.Wall)
+                if (Maze.Cells[current.Position.I, current.Position.J + 1].Value < CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I, current.Position.J + 1]);
 
             if (current.Position.I - 1 >= 0)
-                if (Maze.Cells[current.Position.I - 1, current.Position.J].Value != CellValue.Wall)
+                if (Maze.Cells[current.Position.I - 1, current.Position.J].Value < CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I - 1, current.Position.J]);
 
             if (current.Position.J - 1 >= 0)
-                if (Maze.Cells[current.Position.I, current.Position.J - 1].Value != CellValue.Wall)
+                if (Maze.Cells[current.Position.I, current.Position.J - 1].Value < CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I, current.Position.J - 1]);
 
             if (current.Position.I + 1 < Maze.MazeI)
-                if (Maze.Cells[current.Position.I + 1, current.Position.J].Value != CellValue.Wall)
+                if (Maze.Cells[current.Position.I + 1, current.Position.J].Value < CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
 
             return nei;
         }
-
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-            heur = heuristic1;
-        }
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
-        {
-            heur = heuristic2;
-        }
-
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
-        {
-            heur = heuristic3;
-        }
-
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            timer1.Stop();
-            groupBox1.Enabled = true;
-            groupBox2.Enabled = true;
-            btnFind.Enabled = true;
-            btnStop.Enabled = false;
-            tbrSleep.Enabled = true;
-            btnClear.Enabled = true;
-            ThreadFind.Abort();
-        }
-
-        private void tbrSleep_Scroll(object sender, EventArgs e)
-        {
-            toolTip1.SetToolTip(tbrSleep, (tbrSleep.Value * 20).ToString());
-        }
-
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            TimeCouter++;
-            lbTime.Text = "Time: " + TimeCouter.ToString();
-        }
-
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < Maze.MazeI; i++)
-            {
-                for (int j = 0; j < Maze.MazeJ; j++)
-                {
-                    if (Maze.Cells[i, j].Value != CellValue.None)
-                    {
-                        Maze.SetCellValue(new CellPositon { I = i, J = j }, CellValue.None);
-                        BrushCell(i, j, Brushes.White);
-                    }
-                }
-            }
-        }
+        
 
         private List<Cell> MinfScore(List<Cell> open)
         {
@@ -467,6 +479,22 @@ namespace Visual
             }
 
             return result;
+        }
+
+        #endregion
+
+        #region Helper
+
+        // dùng cho vòng lặp
+        private CellPositon ConvertToIJ(Point location)
+        {
+            return new CellPositon { I = location.Y / CELL_SIZE, J = location.X / CELL_SIZE };
+        }
+
+        // dùng cho vẽ
+        private Point ConvertToXY(int i, int j)
+        {
+            return new Point { Y = i * CELL_SIZE, X = j * CELL_SIZE };
         }
 
         #endregion

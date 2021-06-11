@@ -211,7 +211,7 @@ namespace Visual
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(240, 28);
             this.lbTime.TabIndex = 7;
-            this.lbTime.Text = "Time:";
+            this.lbTime.Text = "Time: 0 second";
             // 
             // btnClear
             // 
@@ -233,7 +233,6 @@ namespace Visual
             this.pnMaze.Paint += new System.Windows.Forms.PaintEventHandler(this.pnMaze_Paint);
             this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
-            this.pnMaze.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseUp);
             // 
             // Form1
             // 
