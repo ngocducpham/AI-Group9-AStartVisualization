@@ -59,8 +59,6 @@ namespace Visual
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            MazeGraphics = pnMaze.CreateGraphics();
-
             heur = heuristic1;
 
         }
