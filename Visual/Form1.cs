@@ -190,7 +190,6 @@ namespace Visual
             txtCellSize.Enabled = false;
 
             ClearFindStep();
-            Sleep = tbrSleep.Value * 20;
             ThreadFind = new Thread(() => aStart(Maze, heur));
             ThreadFind.IsBackground = true;
             ThreadFind.Start();
@@ -264,6 +263,7 @@ namespace Visual
         private void tbrSleep_Scroll(object sender, EventArgs e)
         {
             toolTip1.SetToolTip(tbrSleep, (tbrSleep.Value * 20).ToString() +" milli seconds");
+            Sleep = tbrSleep.Value * 20;
         }
 
 
@@ -340,8 +340,11 @@ namespace Visual
                 current.Value = CellValue.Path;
 
                 if (Sleep != 0)
+                {
                     pnMaze.Invalidate();
-                Thread.Sleep(Sleep);
+                    Thread.Sleep(Sleep);
+                }
+                
             }
 
             lbStep.Text = "Step: " + i.ToString();
