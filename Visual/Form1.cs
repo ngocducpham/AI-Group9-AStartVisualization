@@ -66,6 +66,7 @@ namespace Visual
         #region Paint
         private void DrawGrid(Graphics g)
         {
+
             int top = 0, left = 0;
             // vẽ ngang
             for (int i = 0; i <= Maze.MazeI; i++)
@@ -310,7 +311,7 @@ namespace Visual
                 return;
 
             // cell_size mazeI mazeJ \n data
-            string saveData = $"{CELL_SIZE}\n{Maze.MazeI}\n{Maze.MazeJ}\n";
+            string saveData = $"{CELL_SIZE}\n";
 
             for (int i = 0; i < Maze.MazeI; i++)
             {
@@ -355,9 +356,9 @@ namespace Visual
                 string[] fileContents = File.ReadAllLines(openDialog.FileName);
 
                 CELL_SIZE = int.Parse(fileContents[0]);
-                Maze = new Maze(int.Parse(fileContents[2]), int.Parse(fileContents[1]));
+                InitMaze();
 
-                int line = 3;
+                int line = 1;
                 for (int i = 0; i < Maze.MazeI; i++)
                 {
                     for (int j = 0; j < Maze.MazeJ; j++)
