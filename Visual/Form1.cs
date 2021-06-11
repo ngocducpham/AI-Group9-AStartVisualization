@@ -49,8 +49,8 @@ namespace Visual
 
         private void InitMaze()
         {
-            MAZE_WIDTH = pnMaze.Width / CELL_SIZE * CELL_SIZE;
-            MAZE_HEIGHT = pnMaze.Height / CELL_SIZE * CELL_SIZE;
+            MAZE_WIDTH = (pnMaze.Width / CELL_SIZE) * CELL_SIZE;
+            MAZE_HEIGHT = (pnMaze.Height / CELL_SIZE) * CELL_SIZE;
             Maze = new Maze(pnMaze.Width / CELL_SIZE, pnMaze.Height / CELL_SIZE);
         }
 
@@ -68,7 +68,6 @@ namespace Visual
         }
 
         #region Paint
-
         private void DrawGrid(Graphics g)
         {
             int top = 0, left = 0;
