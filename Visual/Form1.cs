@@ -142,8 +142,14 @@ namespace Visual
                 Maze.SetCellValue(cellPos, CellValue.None);
                 BrushCell(cellPos.I, cellPos.J, Brushes.White);
             }
-
         }
+
+        private void pnMaze_Paint(object sender, PaintEventArgs e)
+        {
+            DrawGrid(e.Graphics);
+            pnMaze.Paint -= pnMaze_Paint;
+        }
+
 
         private void pnMaze_MouseUp(object sender, MouseEventArgs e)
         {
@@ -258,7 +264,7 @@ namespace Visual
             while (true)
             {
                 current = current.CameFrom;
-                if (current.Position.I == Maze.StartPosition.I && current.Position.J == Maze.StartPosition.J)
+                if (current.Position == Maze.StartPosition)
                     break;
                 i++;
                 //current.Value = 6;
@@ -266,14 +272,12 @@ namespace Visual
                 Thread.Sleep(Sleep);
             }
             lbStep.Text = "Step: " + i.ToString();
-            DrawGrid(MazeGraphics);
             btnFind.Enabled = true;
             btnStop.Enabled = false;
             groupBox1.Enabled = true;
             groupBox2.Enabled = true;
             tbrSleep.Enabled = true;
             btnClear.Enabled = true;
-            //pnMaze.Invalidate();
         }
 
         private bool aStart(Maze maze, Heuristic her)
@@ -297,14 +301,14 @@ namespace Visual
             {
                 foreach (var current in MinfScore(openSet))
                 {
-                    if (current.Position.I == maze.GoalPosition.I && current.Position.J == maze.GoalPosition.J)
+                    if (current.Position == maze.GoalPosition)
                     {
                         BrushCell(current.Position.I, current.Position.J, Brushes.Red);
                         reconstruct_path(current);
                         return true;
                     }
 
-                    if (current.Position.I != maze.StartPosition.I || current.Position.J != maze.StartPosition.J)
+                    if (current.Position != maze.StartPosition)
                     {
                         BrushCell(current.Position.I, current.Position.J, Brushes.Pink);
                         current.Value = CellValue.Visited;
@@ -324,7 +328,7 @@ namespace Visual
                             neughbor.fScore = neughbor.gScore + her(neughbor);
                             if (!Exists(openSet, neughbor))
                             {
-                                if (neughbor.Position.I != maze.GoalPosition.I || neughbor.Position.J != maze.GoalPosition.J)
+                                if (neughbor.Position != maze.GoalPosition)
                                 {
                                     neughbor.Value = CellValue.Neighbor;
                                     BrushCell(neughbor.Position.I, neughbor.Position.J, Brushes.Aqua);
@@ -418,11 +422,6 @@ namespace Visual
         private void tbrSleep_Scroll(object sender, EventArgs e)
         {
             toolTip1.SetToolTip(tbrSleep, (tbrSleep.Value * 20).ToString());
-        }
-
-        private void pnMaze_Paint(object sender, PaintEventArgs e)
-        {
-            DrawGrid(e.Graphics);
         }
 
 

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace Visual
 {
-    public class MazeControl : Panel
+    public class MazeControl : Label
     {
         public MazeControl()
         {

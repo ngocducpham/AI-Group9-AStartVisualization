@@ -52,6 +52,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GridControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Maze.cs" />
     <Compile Include="MazeControl.cs">
       <SubType>Component</SubType>

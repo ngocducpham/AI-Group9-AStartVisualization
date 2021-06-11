@@ -130,23 +130,17 @@
 
         public static bool operator ==(CellPositon a, CellPositon b)
         {
-            if(a is null)
+            if (a is null)
             {
                 return b is null;
             }
 
             return a.Equals(b);
-            //return (a.I == b.I && a.J == b.J);
         }
 
         public static bool operator !=(CellPositon a, CellPositon b)
         {
-            //if (b == null)
-            //{
-            //    return a is null;
-            //}
-            //return (a.I != b.I || a.J != b.J);
-            return !(a==b);
+            return !(a == b);
         }
 
         public override bool Equals(object obj)

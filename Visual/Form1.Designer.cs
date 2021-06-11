@@ -46,8 +46,8 @@ namespace Visual
             this.lbStep = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.lbTime = new System.Windows.Forms.Label();
-            this.pnMaze = new Visual.MazeControl();
             this.btnClear = new System.Windows.Forms.Button();
+            this.pnMaze = new Visual.MazeControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbrSleep)).BeginInit();
@@ -213,6 +213,16 @@ namespace Visual
             this.lbTime.TabIndex = 7;
             this.lbTime.Text = "Time:";
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(980, 546);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 8;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // pnMaze
             // 
             this.pnMaze.BackColor = System.Drawing.Color.White;
@@ -224,16 +234,6 @@ namespace Visual
             this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
             this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             this.pnMaze.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseUp);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Location = new System.Drawing.Point(980, 546);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 8;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // Form1
             // 
