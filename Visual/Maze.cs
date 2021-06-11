@@ -120,7 +120,8 @@
         Start,
         Wall,
         Neighbor,
-        Visited
+        Visited,
+        Path
     }
 
     public class CellPositon

@@ -22,7 +22,7 @@ namespace Visual
     {
         private DrawMode DrawMode;
 
-        private const int CELL_SIZE = 30;
+        private int CELL_SIZE = 30;
 
         private int MAZE_WIDTH, MAZE_HEIGHT;
 
@@ -46,13 +46,17 @@ namespace Visual
 
         }
 
+        private void InitMaze()
+        {
+            MAZE_WIDTH = pnMaze.Width / CELL_SIZE * CELL_SIZE;
+            MAZE_HEIGHT = pnMaze.Height / CELL_SIZE * CELL_SIZE;
+            Maze = new Maze(pnMaze.Width / CELL_SIZE, pnMaze.Height / CELL_SIZE);
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             DrawMode = DrawMode.DrawWall;
-            MAZE_WIDTH = pnMaze.Width / CELL_SIZE * CELL_SIZE;
-
-            MAZE_HEIGHT = pnMaze.Height / CELL_SIZE * CELL_SIZE;
-            Maze = new Maze(pnMaze.Width / CELL_SIZE, pnMaze.Height / CELL_SIZE);
+            InitMaze();
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
@@ -82,23 +86,13 @@ namespace Visual
             }
         }
 
-        private void BrushCell(int i, int j, Brush color)
-        {
-            var cellPos = ConvertToXY(i, j);
-            MazeGraphics.FillRectangle(color, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
-            MazeGraphics.DrawLine(Pens.DarkSlateGray, cellPos.X, cellPos.Y, cellPos.X + CELL_SIZE, cellPos.Y);
-            MazeGraphics.DrawLine(Pens.DarkSlateGray, cellPos.X + CELL_SIZE, cellPos.Y, cellPos.X + CELL_SIZE, cellPos.Y + CELL_SIZE);
-            MazeGraphics.DrawLine(Pens.DarkSlateGray, cellPos.X, cellPos.Y + CELL_SIZE, cellPos.X + CELL_SIZE, cellPos.Y + CELL_SIZE);
-            MazeGraphics.DrawLine(Pens.DarkSlateGray, cellPos.X, cellPos.Y, cellPos.X, cellPos.Y + CELL_SIZE);
-        }
-
         private void pnMaze_Paint(object sender, PaintEventArgs e)
         {
-            RePaintCell(e.Graphics);
+            BrushCell(e.Graphics);
             DrawGrid(e.Graphics);
         }
 
-        private void RePaintCell(Graphics g)
+        private void BrushCell(Graphics g)
         {
             Point cellPos;
 
@@ -117,6 +111,8 @@ namespace Visual
                         g.FillRectangle(Brushes.Pink, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                     else if (Maze.Cells[i, j].Value == CellValue.Wall)
                         g.FillRectangle(Brushes.Black, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
+                    else if(Maze.Cells[i, j].Value == CellValue.Path)
+                        g.FillRectangle(Brushes.Yellow, cellPos.X, cellPos.Y, CELL_SIZE, CELL_SIZE);
                 }
             }
         }
@@ -131,29 +127,21 @@ namespace Visual
             {
                 case DrawMode.DrawWall:
                     Maze.SetCellValue(cellPos, CellValue.Wall);
-                    BrushCell(cellPos.I, cellPos.J, Brushes.Black);
                     break;
                 case DrawMode.DrawStart:
-                    if (Maze.StartPosition != null)
-                    {
-                        BrushCell(Maze.StartPosition.I, Maze.StartPosition.J, Brushes.White);
-                    }
                     Maze.SetCellValue(cellPos, CellValue.Start);
-                    BrushCell(cellPos.I, cellPos.J, Brushes.SpringGreen);
                     break;
                 case DrawMode.DrawGoal:
-                    if (Maze.GoalPosition != null)
-                        BrushCell(Maze.GoalPosition.I, Maze.GoalPosition.J, Brushes.White);
                     Maze.SetCellValue(cellPos, CellValue.Goal);
-                    BrushCell(cellPos.I, cellPos.J, Brushes.Red);
                     break;
                 case DrawMode.Delete:
                     Maze.SetCellValue(cellPos, CellValue.None);
-                    BrushCell(cellPos.I, cellPos.J, Brushes.White);
                     break;
                 default:
                     break;
             }
+
+            pnMaze.Invalidate();
         }
 
         private void pnMaze_MouseMove(object sender, MouseEventArgs e)
@@ -168,13 +156,13 @@ namespace Visual
             if (DrawMode == DrawMode.DrawWall)
             {
                 Maze.SetCellValue(cellPos, CellValue.Wall);
-                BrushCell(cellPos.I, cellPos.J, Brushes.Black);
             }
             else if (DrawMode == DrawMode.Delete)
             {
                 Maze.SetCellValue(cellPos, CellValue.None);
-                BrushCell(cellPos.I, cellPos.J, Brushes.White);
             }
+
+            pnMaze.Invalidate();
         }
 
         #endregion
@@ -185,7 +173,7 @@ namespace Visual
         {
             if (Maze.StartPosition == null || Maze.GoalPosition == null)
             {
-                MessageBox.Show("Chua chon diem bat dau hoac diem dich");
+                MessageBox.Show("Chưa chọn điểm bắt đầu, kết thúc","Lỗi!!",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 return;
             }
 
@@ -198,6 +186,9 @@ namespace Visual
             btnStop.Enabled = true;
             tbrSleep.Enabled = false;
             btnClear.Enabled = false;
+            btnClearStep.Enabled = false;
+            txtCellSize.Enabled = false;
+
             ClearFindStep();
             Sleep = tbrSleep.Value * 20;
             ThreadFind = new Thread(() => aStart(Maze, heur));
@@ -264,6 +255,9 @@ namespace Visual
             btnStop.Enabled = false;
             tbrSleep.Enabled = true;
             btnClear.Enabled = true;
+            btnClearStep.Enabled = true;
+            txtCellSize.Enabled = true;
+
             ThreadFind.Abort();
         }
 
@@ -277,6 +271,11 @@ namespace Visual
         {
             TimeCouter++;
             lbTime.Text = "Time: " + TimeCouter.ToString() + " seconds";
+        }
+
+        private void btnClearStep_Click(object sender, EventArgs e)
+        {
+            ClearFindStep();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -329,25 +328,33 @@ namespace Visual
 
         private void reconstruct_path(Cell current)
         {
-            int i = 0;
+            int i = 1;
             timer1.Stop();
             while (true)
             {
                 current = current.CameFrom;
                 if (current.Position == Maze.StartPosition)
                     break;
+
                 i++;
-                //current.Value = 6;
-                BrushCell(current.Position.I, current.Position.J, Brushes.Yellow);
+                current.Value = CellValue.Path;
+
+                if (Sleep != 0)
+                    pnMaze.Invalidate();
                 Thread.Sleep(Sleep);
             }
+
             lbStep.Text = "Step: " + i.ToString();
+            btnClearStep.Enabled = true;
             btnFind.Enabled = true;
             btnStop.Enabled = false;
             groupBox1.Enabled = true;
             groupBox2.Enabled = true;
             tbrSleep.Enabled = true;
             btnClear.Enabled = true;
+            txtCellSize.Enabled = true;
+
+            pnMaze.Invalidate();
         }
 
         private bool aStart(Maze maze, Heuristic her)
@@ -373,17 +380,19 @@ namespace Visual
                 {
                     if (current.Position == maze.GoalPosition)
                     {
-                        BrushCell(current.Position.I, current.Position.J, Brushes.Red);
+                        pnMaze.Invalidate();
                         reconstruct_path(current);
                         return true;
                     }
 
                     if (current.Position != maze.StartPosition)
                     {
-                        BrushCell(current.Position.I, current.Position.J, Brushes.Pink);
+                        if (Sleep != 0)
+                            pnMaze.Invalidate();
                         current.Value = CellValue.Visited;
                     }
 
+                   
                     Thread.Sleep(Sleep);
 
                     openSet.Remove(current);
@@ -401,7 +410,8 @@ namespace Visual
                                 if (neughbor.Position != maze.GoalPosition)
                                 {
                                     neughbor.Value = CellValue.Neighbor;
-                                    BrushCell(neughbor.Position.I, neughbor.Position.J, Brushes.Aqua);
+                                    if (Sleep != 0)
+                                        pnMaze.Invalidate();
                                 }
 
                                 openSet.Add(neughbor);
@@ -409,18 +419,20 @@ namespace Visual
                                 Thread.Sleep(Sleep);
                             }
                         }
-
                     }
                 }
             }
+
+            btnClearStep.Enabled = true;
             btnFind.Enabled = true;
             btnStop.Enabled = false;
             groupBox1.Enabled = true;
             groupBox2.Enabled = true;
             tbrSleep.Enabled = true;
             btnClear.Enabled = true;
+            txtCellSize.Enabled = true;
             timer1.Stop();
-            MessageBox.Show("Khong tim duoc");
+            MessageBox.Show("Không tìm thấy đường đi", "AStart Visualization",MessageBoxButtons.OK,MessageBoxIcon.Warning);
             return false;
         }
 
@@ -490,6 +502,29 @@ namespace Visual
         {
             return new CellPositon { I = location.Y / CELL_SIZE, J = location.X / CELL_SIZE };
         }
+
+        private void txtCellSize_KeyDown(object sender, KeyEventArgs e)
+        {
+            int cellSize;
+
+            if(e.KeyCode == Keys.Enter && int.TryParse(txtCellSize.Text,out cellSize))
+            {
+                if (cellSize == 0 || cellSize == 1)
+                {
+                    MessageBox.Show("Chơi vậy lấy gì vẽ (╬▔皿▔)╯");
+                    return;
+                }
+                else if(cellSize > 1 && cellSize < 10)
+                {
+                    MessageBox.Show("Eyyy, mắt sáng đó (⓿_⓿)");
+                }
+                
+                CELL_SIZE = cellSize;
+                InitMaze();
+                pnMaze.Invalidate();
+            }
+        }
+
 
         // dùng cho vẽ
         private Point ConvertToXY(int i, int j)
