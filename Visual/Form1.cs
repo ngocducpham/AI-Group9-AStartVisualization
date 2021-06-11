@@ -33,8 +33,6 @@ namespace Visual
 
         private Heuristic heur;
 
-        private Graphics MazeGraphics;
-
         private Thread ThreadFind;
 
         private int Sleep;
