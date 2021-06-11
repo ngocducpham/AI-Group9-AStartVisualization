@@ -59,7 +59,7 @@ namespace Visual
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            heur = heuristic1;
+            heur = ManhattanHeuristic;
 
         }
 
@@ -229,17 +229,17 @@ namespace Visual
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            heur = heuristic1;
+            heur = ManhattanHeuristic;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            heur = heuristic2;
+            heur = DiagonalHeuristic;
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            heur = heuristic3;
+            heur = EuclideanHeuristic;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -388,34 +388,40 @@ namespace Visual
         #endregion
 
         #region Algorithm
+        #region Heuristic
+        // http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
 
-        private double heuristic1(Cell current)
+        private double ManhattanHeuristic(Cell current)
         {
             return Math.Abs(current.Position.I - Maze.GoalPosition.I) + Math.Abs(current.Position.J - Maze.GoalPosition.J);
         }
 
-        private double heuristic2(Cell current)
-        {
-            Point posCur = ConvertToXY(current.Position.I, current.Position.J);
-            Point posGoal = ConvertToXY(Maze.GoalPosition.I, Maze.GoalPosition.J);
-
-            return Math.Round(Math.Sqrt(Math.Pow(posCur.X - posGoal.X, 2) + Math.Pow(posCur.Y - posGoal.Y, 2)), 3);
-        }
-
-        private double heuristic3(Cell current)
+        private double DiagonalHeuristic(Cell current)
         {
             /*
             dx = abs(current_cell.x – goal.x)
             dy = abs(current_cell.y – goal.y) 
             h = D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
             */
+
             Point posCur = ConvertToXY(current.Position.I, current.Position.J);
             Point posGoal = ConvertToXY(Maze.GoalPosition.I, Maze.GoalPosition.J);
+
             double dx = Math.Abs(posCur.X - posGoal.X);
             double dy = Math.Abs(posCur.Y - posGoal.Y);
 
             return (dy + dx) + (Math.Sqrt(2) - 2) * Math.Min(dy, dx);
         }
+
+        private double EuclideanHeuristic(Cell current)
+        {
+            Point posCur = ConvertToXY(current.Position.I, current.Position.J);
+            Point posGoal = ConvertToXY(Maze.GoalPosition.I, Maze.GoalPosition.J);
+
+            return Math.Sqrt(Math.Pow(posCur.X - posGoal.X, 2) + Math.Pow(posCur.Y - posGoal.Y, 2));
+        }
+
+        #endregion
 
         private void reconstruct_path(Cell current)
         {
@@ -544,19 +550,19 @@ namespace Visual
             List<Cell> nei = new List<Cell>();
 
             if (current.Position.J + 1 < Maze.MazeJ)
-                if (Maze.Cells[current.Position.I, current.Position.J + 1].Value < CellValue.Wall)
+                if (Maze.Cells[current.Position.I, current.Position.J + 1].Value != CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I, current.Position.J + 1]);
 
             if (current.Position.I - 1 >= 0)
-                if (Maze.Cells[current.Position.I - 1, current.Position.J].Value < CellValue.Wall)
+                if (Maze.Cells[current.Position.I - 1, current.Position.J].Value != CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I - 1, current.Position.J]);
 
             if (current.Position.J - 1 >= 0)
-                if (Maze.Cells[current.Position.I, current.Position.J - 1].Value < CellValue.Wall)
+                if (Maze.Cells[current.Position.I, current.Position.J - 1].Value != CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I, current.Position.J - 1]);
 
             if (current.Position.I + 1 < Maze.MazeI)
-                if (Maze.Cells[current.Position.I + 1, current.Position.J].Value < CellValue.Wall)
+                if (Maze.Cells[current.Position.I + 1, current.Position.J].Value != CellValue.Wall)
                     nei.Add(Maze.Cells[current.Position.I + 1, current.Position.J]);
 
             return nei;
