@@ -447,7 +447,6 @@ namespace Visual
             tbrSleep.Enabled = true;
             btnClear.Enabled = true;
             txtCellSize.Enabled = true;
-
             pnMaze.Invalidate();
         }
 
@@ -483,7 +482,7 @@ namespace Visual
                     {
                         if (Sleep != 0)
                             pnMaze.Invalidate();
-                        current.Value = CellValue.Visited;
+                        maze.SetCellValue(current.Position, CellValue.Visited);
                     }
 
 
@@ -503,7 +502,7 @@ namespace Visual
                             {
                                 if (neughbor.Position != maze.GoalPosition)
                                 {
-                                    neughbor.Value = CellValue.Neighbor;
+                                    maze.SetCellValue(neughbor.Position, CellValue.Neighbor);
                                     if (Sleep != 0)
                                         pnMaze.Invalidate();
                                 }

@@ -95,7 +95,7 @@
 
     public class Cell
     {
-        public CellValue Value { get; set; }
+        public CellValue Value { get;internal set; }
         // điểm g
         public int gScore { get; set; }
         // f= g + h
