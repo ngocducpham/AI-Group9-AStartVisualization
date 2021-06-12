@@ -20,7 +20,7 @@ namespace Visual
 
         private delegate double Heuristic(Cell current);
 
-        private Heuristic heuristic;
+        private Heuristic heur;
 
         private Thread ThreadFind;
 
@@ -48,7 +48,7 @@ namespace Visual
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            heuristic = ManhattanHeuristic;
+            heur = ManhattanHeuristic;
         }
 
         #region Paint
@@ -165,7 +165,7 @@ namespace Visual
             }
 
             SetupFind();
-            ThreadFind = new Thread(() => aStart(Maze, heuristic));
+            ThreadFind = new Thread(() => aStart(Maze, heur));
             ThreadFind.IsBackground = true;
             ThreadFind.Start();
         }
@@ -244,17 +244,17 @@ namespace Visual
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            heuristic = ManhattanHeuristic;
+            heur = ManhattanHeuristic;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            heuristic = DiagonalHeuristic;
+            heur = DiagonalHeuristic;
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            heuristic = EuclideanHeuristic;
+            heur = EuclideanHeuristic;
         }
 
         private void tbrSleep_Scroll(object sender, EventArgs e)
@@ -388,6 +388,7 @@ namespace Visual
 
         #endregion
 
+        #region Algorithm
         #region Heuristic
         // http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
 
@@ -406,7 +407,7 @@ namespace Visual
         {
             /*
             dx = abs(current_cell.x – goal.x)
-            dy = abs(current_cell.y – goal.y)
+            dy = abs(current_cell.y – goal.y) 
             h  = D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
             */
 
@@ -435,8 +436,6 @@ namespace Visual
 
         #endregion
 
-        #region Algorithm 
-
         private void ReconstructPath(Cell current)
         {
             int i = 0;
@@ -458,7 +457,7 @@ namespace Visual
 
             }
 
-            lbCost.Text = "Cost: " + i.ToString();
+            lbCost.Text = "Path: " + i.ToString();
             SetupEndFind();
         }
 
@@ -467,7 +466,6 @@ namespace Visual
             List<Cell> openSet = new List<Cell>();
             openSet.Add(maze.Cells[maze.StartCell.Position.I, maze.StartCell.Position.J]);
 
-            // khởi tạo giá trị ban đầu
             for (int i = 0; i < maze.MazeI; i++)
             {
                 for (int j = 0; j < maze.MazeJ; j++)
@@ -476,28 +474,25 @@ namespace Visual
                     maze.Cells[i, j].fScore = 99999;
                 }
             }
+
             maze.StartCell.gScore = 0;
             maze.StartCell.fScore = her(maze.StartCell);
 
             Cell current;
-
             while (openSet.Count != 0)
             {
-
                 current = MinfScore(openSet);
-
                 if (current.Position == maze.GoalCell.Position)
                 {
                     ReconstructPath(current);
                     return true;
                 }
 
-                // vẽ màu cho ô đang xét
                 if (current.Position != maze.StartCell.Position)
                 {
-                    maze.SetCellValue(current.Position, CellValue.Visited);
                     if (Sleep != 0)
                         pnMaze.Invalidate();
+                    maze.SetCellValue(current.Position, CellValue.Visited);
                 }
 
                 Thread.Sleep(Sleep);
@@ -514,7 +509,6 @@ namespace Visual
                         neughbor.fScore = neughbor.gScore + her(neughbor);
                         if (!Exists(openSet, neughbor))
                         {
-                            // vẽ màu cho ô kế cận
                             if (neughbor.Position != maze.GoalCell.Position)
                             {
                                 maze.SetCellValue(neughbor.Position, CellValue.Neighbor);
@@ -526,12 +520,12 @@ namespace Visual
 
                             Thread.Sleep(Sleep);
                         }
+
                     }
-
-
                 }
             }
 
+            timer1.Stop();
             SetupEndFind();
             MessageBox.Show("Không tìm thấy đường đi", "AStart Visualization", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
@@ -579,7 +573,7 @@ namespace Visual
             {
                 if (open[i].fScore < result.fScore)
                 {
-                    result = open[0];
+                    result = open[i];
                 }
             }
 

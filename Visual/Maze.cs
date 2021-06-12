@@ -83,7 +83,6 @@
                     {
                         Value = CellValue.None,
                         Position = new CellPositon { I = i, J = j }
-
                     };
                 }
             }

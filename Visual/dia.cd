@@ -2,6 +2,9 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Visual.Maze">
     <Position X="7.25" Y="0.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAEAAAABAgAAAAIAEIAAAAAAAAAQAAAAAAIAAAgAAA=</HashCode>
       <FileName>Maze.cs</FileName>
