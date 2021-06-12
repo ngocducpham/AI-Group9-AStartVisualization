@@ -44,7 +44,7 @@ namespace Visual
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.tbrSleep = new System.Windows.Forms.TrackBar();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.lbStep = new System.Windows.Forms.Label();
+            this.lbPath = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.lbTime = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
@@ -201,13 +201,13 @@ namespace Visual
             this.tbrSleep.TabIndex = 1;
             this.tbrSleep.Scroll += new System.EventHandler(this.tbrSleep_Scroll);
             // 
-            // lbStep
+            // lbPath
             // 
-            this.lbStep.Location = new System.Drawing.Point(998, 675);
-            this.lbStep.Name = "lbStep";
-            this.lbStep.Size = new System.Drawing.Size(200, 24);
-            this.lbStep.TabIndex = 6;
-            this.lbStep.Text = "Step: 0";
+            this.lbPath.Location = new System.Drawing.Point(998, 675);
+            this.lbPath.Name = "lbPath";
+            this.lbPath.Size = new System.Drawing.Size(200, 24);
+            this.lbPath.TabIndex = 6;
+            this.lbPath.Text = "Path: 0";
             // 
             // timer1
             // 
@@ -287,7 +287,7 @@ namespace Visual
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1210, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1210, 30);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -298,7 +298,7 @@ namespace Visual
             this.openToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // saveToolStripMenuItem
@@ -340,7 +340,7 @@ namespace Visual
             this.Controls.Add(this.btnClearStep);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.lbTime);
-            this.Controls.Add(this.lbStep);
+            this.Controls.Add(this.lbPath);
             this.Controls.Add(this.tbrSleep);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnStop);
@@ -385,7 +385,7 @@ namespace Visual
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TrackBar tbrSleep;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label lbStep;
+        private System.Windows.Forms.Label lbPath;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.Button btnClear;

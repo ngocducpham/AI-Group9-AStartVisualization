@@ -5,61 +5,59 @@
         public readonly int MazeI, MazeJ;
         public Cell[,] Cells { get; set; }
 
-        private CellPositon startPos;
-        public CellPositon StartPosition
+        private Cell startCell;
+        public Cell StartCell
         {
-            get => startPos;
-            private set
+            get => startCell;
+            set
             {
-                if (startPos != null)
+                if (startCell != null)
                 {
-                    Cells[startPos.I, startPos.J].Value = CellValue.None;
+                    startCell.Value = CellValue.None;
                 }
 
-                Cells[value.I, value.J].Value = CellValue.Start;
-                startPos = value;
+                startCell = value;
+                if (startCell != null)
+                    startCell.Value = CellValue.Start;
             }
         }
 
-        private CellPositon goalPos;
-        public CellPositon GoalPosition
+        private Cell goalCell;
+        public Cell GoalCell
         {
-            get => goalPos;
-            private set
+            get => goalCell;
+            set
             {
-                if (goalPos != null)
+                if (goalCell != null)
                 {
-                    Cells[goalPos.I, goalPos.J].Value = CellValue.None;
+                    goalCell.Value = CellValue.None;
                 }
-                Cells[value.I, value.J].Value = CellValue.Goal;
-                goalPos = value;
+
+                goalCell = value;
+                if (goalCell != null)
+                    goalCell.Value = CellValue.Goal;
             }
         }
 
         public void SetCellValue(CellPositon position, CellValue value)
         {
-            if (startPos != null)
+            // vị trí đích hoặc đầu bị ghi đè bằng giá trị khác
+            if (startCell != null && position == startCell.Position && value != CellValue.Start)
             {
-                if (position.I == startPos.I && position.J == startPos.J && value != CellValue.Start)
-                {
-                    startPos = null;
-                }
+                StartCell = null;
             }
-            else if (goalPos != null)
+            else if (goalCell != null && position == goalCell.Position && value != CellValue.Goal)
             {
-                if (position.I == goalPos.I && position.J == goalPos.J && value != CellValue.Goal)
-                {
-                    goalPos = null;
-                }
+                GoalCell = null;
             }
 
             if (value == CellValue.Start)
             {
-                StartPosition = position;
+                StartCell = Cells[position.I, position.J];
             }
             else if (value == CellValue.Goal)
             {
-                GoalPosition = position;
+                GoalCell = Cells[position.I, position.J];
             }
 
             Cells[position.I, position.J].Value = value;
@@ -95,7 +93,7 @@
 
     public class Cell
     {
-        public CellValue Value { get;internal set; }
+        public CellValue Value { get; internal set; }
         // điểm g
         public int gScore { get; set; }
         // f= g + h
@@ -148,12 +146,12 @@
         {
             if (obj is null)
                 return false;
-            return obj is CellPositon b ? (I == b.I && J == b.J) : false;
+            return obj is CellPositon b && (I == b.I && J == b.J);
         }
 
         public override int GetHashCode()
         {
-            return (I, J).GetHashCode();
+            return I.GetHashCode() ^ J.GetHashCode();
         }
     }
 }
