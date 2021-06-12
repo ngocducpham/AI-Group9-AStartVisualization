@@ -55,7 +55,6 @@ namespace Visual
 
         private void DrawGrid(Graphics g)
         {
-
             int top = 0, left = 0;
             // vẽ ngang
             for (int i = 0; i <= Maze.MazeI; i++)
