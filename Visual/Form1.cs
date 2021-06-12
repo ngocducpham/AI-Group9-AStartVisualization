@@ -20,7 +20,7 @@ namespace Visual
 
         private delegate double Heuristic(Cell current);
 
-        private Heuristic heur;
+        private Heuristic heuristic;
 
         private Thread ThreadFind;
 
@@ -48,11 +48,11 @@ namespace Visual
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            heur = ManhattanHeuristic;
-
+            heuristic = ManhattanHeuristic;
         }
 
         #region Paint
+
         private void DrawGrid(Graphics g)
         {
 
@@ -70,12 +70,6 @@ namespace Visual
                 g.DrawLine(Pens.DarkSlateGray, left, 0, left, MAZE_HEIGHT);
                 left += CELL_SIZE;
             }
-        }
-
-        private void pnMaze_Paint(object sender, PaintEventArgs e)
-        {
-            BrushCell(e.Graphics);
-            DrawGrid(e.Graphics);
         }
 
         private void BrushCell(Graphics g)
@@ -104,8 +98,15 @@ namespace Visual
         }
         #endregion
 
-        #region Maze Mouse Event
+        #region Maze Event
 
+        private void pnMaze_Paint(object sender, PaintEventArgs e)
+        {
+            BrushCell(e.Graphics);
+            DrawGrid(e.Graphics);
+        }
+
+        // vẽ xóa = click chuột
         private void pnMaze_MouseDown(object sender, MouseEventArgs e)
         {
             var cellPos = ConvertToIJ(e.Location);
@@ -116,11 +117,9 @@ namespace Visual
                     break;
                 case DrawMode.DrawStart:
                     Maze.SetCellValue(cellPos, CellValue.Start);
-                    
                     break;
                 case DrawMode.DrawGoal:
                     Maze.SetCellValue(cellPos, CellValue.Goal);
-                    
                     break;
                 case DrawMode.Delete:
                     Maze.SetCellValue(cellPos, CellValue.None);
@@ -132,6 +131,7 @@ namespace Visual
             pnMaze.Invalidate();
         }
 
+        // vẽ tường và xóa = di chuột
         private void pnMaze_MouseMove(object sender, MouseEventArgs e)
         {
             var cellPos = ConvertToIJ(e.Location);
@@ -165,18 +165,19 @@ namespace Visual
                 return;
             }
 
-            TimeCouter = 0;
-            lbTime.Text = "Time: 0 second";
-            timer1.Start();
-            DisableControl();
-
-            ClearFindStep();
-            ThreadFind = new Thread(() => aStart(Maze, heur));
+            SetupFind();
+            ThreadFind = new Thread(() => aStart(Maze, heuristic));
             ThreadFind.IsBackground = true;
             ThreadFind.Start();
         }
 
-        private void EnableControl()
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            SetupEndFind();
+            ThreadFind.Abort();
+        }
+
+        private void SetupEndFind()
         {
             btnClearStep.Enabled = true;
             btnFind.Enabled = true;
@@ -186,10 +187,15 @@ namespace Visual
             tbrSleep.Enabled = true;
             btnClear.Enabled = true;
             txtCellSize.Enabled = true;
+            timer1.Stop();
         }
 
-        private void DisableControl()
+        private void SetupFind()
         {
+            TimeCouter = 0;
+            lbTime.Text = "Time: 0 second";
+            timer1.Start();
+
             groupBox1.Enabled = false;
             groupBox2.Enabled = false;
             btnFind.Enabled = false;
@@ -198,6 +204,8 @@ namespace Visual
             btnClear.Enabled = false;
             btnClearStep.Enabled = false;
             txtCellSize.Enabled = false;
+
+            ClearFindStep();
         }
 
         private void ClearFindStep()
@@ -237,32 +245,17 @@ namespace Visual
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            heur = ManhattanHeuristic;
+            heuristic = ManhattanHeuristic;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            heur = DiagonalHeuristic;
+            heuristic = DiagonalHeuristic;
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            heur = EuclideanHeuristic;
-        }
-
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            timer1.Stop();
-            groupBox1.Enabled = true;
-            groupBox2.Enabled = true;
-            btnFind.Enabled = true;
-            btnStop.Enabled = false;
-            tbrSleep.Enabled = true;
-            btnClear.Enabled = true;
-            btnClearStep.Enabled = true;
-            txtCellSize.Enabled = true;
-
-            ThreadFind.Abort();
+            heuristic = EuclideanHeuristic;
         }
 
         private void tbrSleep_Scroll(object sender, EventArgs e)
@@ -305,6 +298,7 @@ namespace Visual
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // mở cửa sổ chọn file lưu
             SaveFileDialog saveDialog = new SaveFileDialog()
             {
                 FileName = "Maze.maz",
@@ -395,7 +389,6 @@ namespace Visual
 
         #endregion
 
-        #region Algorithm
         #region Heuristic
         // http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
 
@@ -414,7 +407,7 @@ namespace Visual
         {
             /*
             dx = abs(current_cell.x – goal.x)
-            dy = abs(current_cell.y – goal.y) 
+            dy = abs(current_cell.y – goal.y)
             h  = D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
             */
 
@@ -443,6 +436,8 @@ namespace Visual
 
         #endregion
 
+        #region Algorithm 
+
         private void ReconstructPath(Cell current)
         {
             int i = 0;
@@ -453,7 +448,7 @@ namespace Visual
                 current = current.CameFrom;
                 if (current.Position == Maze.StartCell.Position)
                     break;
-            
+
                 current.Value = CellValue.Path;
 
                 if (Sleep != 0)
@@ -464,8 +459,8 @@ namespace Visual
 
             }
 
-            lbPath.Text = "Path: " + i.ToString();
-            EnableControl();
+            lbCost.Text = "Cost: " + i.ToString();
+            SetupEndFind();
         }
 
         private bool aStart(Maze maze, Heuristic her)
@@ -473,6 +468,7 @@ namespace Visual
             List<Cell> openSet = new List<Cell>();
             openSet.Add(maze.Cells[maze.StartCell.Position.I, maze.StartCell.Position.J]);
 
+            // khởi tạo giá trị ban đầu
             for (int i = 0; i < maze.MazeI; i++)
             {
                 for (int j = 0; j < maze.MazeJ; j++)
@@ -481,60 +477,63 @@ namespace Visual
                     maze.Cells[i, j].fScore = 99999;
                 }
             }
-
             maze.StartCell.gScore = 0;
             maze.StartCell.fScore = her(maze.StartCell);
 
+            Cell current;
+
             while (openSet.Count != 0)
             {
-                foreach (var current in MinfScore(openSet))
+
+                current = MinfScore(openSet);
+
+                if (current.Position == maze.GoalCell.Position)
                 {
-                    if (current.Position == maze.GoalCell.Position)
+                    ReconstructPath(current);
+                    return true;
+                }
+
+                // vẽ màu cho ô đang xét
+                if (current.Position != maze.StartCell.Position)
+                {
+                    maze.SetCellValue(current.Position, CellValue.Visited);
+                    if (Sleep != 0)
+                        pnMaze.Invalidate();
+                }
+
+                Thread.Sleep(Sleep);
+
+                openSet.Remove(current);
+
+                foreach (var neughbor in FindNeighbors(current))
+                {
+                    var tentative_gScore = current.gScore + 1;
+                    if (tentative_gScore < neughbor.gScore)
                     {
-                        ReconstructPath(current);
-                        return true;
-                    }
-
-                    if (current.Position != maze.StartCell.Position)
-                    {
-                        if (Sleep != 0)
-                            pnMaze.Invalidate();
-                        maze.SetCellValue(current.Position, CellValue.Visited);
-                    }
-
-                    Thread.Sleep(Sleep);
-
-                    openSet.Remove(current);
-
-                    foreach (var neughbor in FindNeighbors(current))
-                    {
-                        var tentative_gScore = current.gScore + 1;
-                        if (tentative_gScore < neughbor.gScore)
+                        neughbor.CameFrom = current;
+                        neughbor.gScore = tentative_gScore;
+                        neughbor.fScore = neughbor.gScore + her(neughbor);
+                        if (!Exists(openSet, neughbor))
                         {
-                            neughbor.CameFrom = current;
-                            neughbor.gScore = tentative_gScore;
-                            neughbor.fScore = neughbor.gScore + her(neughbor);
-                            if (!Exists(openSet, neughbor))
+                            // vẽ màu cho ô kế cận
+                            if (neughbor.Position != maze.GoalCell.Position)
                             {
-                                if (neughbor.Position != maze.GoalCell.Position)
-                                {
-                                    maze.SetCellValue(neughbor.Position, CellValue.Neighbor);
-                                    if (Sleep != 0)
-                                        pnMaze.Invalidate();
-                                }
-
-                                openSet.Add(neughbor);
-
-                                Thread.Sleep(Sleep);
+                                maze.SetCellValue(neughbor.Position, CellValue.Neighbor);
+                                if (Sleep != 0)
+                                    pnMaze.Invalidate();
                             }
+
+                            openSet.Add(neughbor);
+
+                            Thread.Sleep(Sleep);
                         }
                     }
+
 
                 }
             }
 
-            timer1.Stop();
-            EnableControl();          
+            SetupEndFind();
             MessageBox.Show("Không tìm thấy đường đi", "AStart Visualization", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
@@ -573,46 +572,15 @@ namespace Visual
         }
 
 
-        private List<Cell> MinfScore(List<Cell> open)
+        private Cell MinfScore(List<Cell> open)
         {
-            double min = open[0].fScore;
-            List<Cell> result = new List<Cell>();
-            result.Add(open[0]);
+            Cell result = open[0];
 
             for (int i = 1; i < open.Count; i++)
             {
-                if (open[i].fScore < min)
+                if (open[i].fScore < result.fScore)
                 {
-                    result.Clear();
-                    result.Add(open[i]);
-                    min = open[i].fScore;
-                }
-                else if (open[i].fScore == min)
-                {
-                    result.Add(open[i]);
-                }
-            }
-
-            return result;
-        }
-
-        private List<Cell> MinfsScore(List<Cell> open)
-        {
-            double min = open[0].fScore;
-            List<Cell> result = new List<Cell>();
-            result.Add(open[0]);
-
-            for (int i = 1; i < open.Count; i++)
-            {
-                if (open[i].fScore < min)
-                {
-                    result.Clear();
-                    result.Add(open[i]);
-                    min = open[i].fScore;
-                }
-                else if (open[i].fScore == min)
-                {
-                    result.Add(open[i]);
+                    result = open[0];
                 }
             }
 
@@ -626,6 +594,12 @@ namespace Visual
         private CellPositon ConvertToIJ(Point location)
         {
             return new CellPositon { I = location.Y / CELL_SIZE, J = location.X / CELL_SIZE };
+        }
+
+        // dùng cho vẽ
+        private Point ConvertToXY(int i, int j)
+        {
+            return new Point { Y = i * CELL_SIZE, X = j * CELL_SIZE };
         }
 
         private void txtCellSize_KeyDown(object sender, KeyEventArgs e)
@@ -648,12 +622,6 @@ namespace Visual
                 InitMaze();
                 pnMaze.Invalidate();
             }
-        }
-
-        // dùng cho vẽ
-        private Point ConvertToXY(int i, int j)
-        {
-            return new Point { Y = i * CELL_SIZE, X = j * CELL_SIZE };
         }
         #endregion
     }

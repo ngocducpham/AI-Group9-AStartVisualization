@@ -44,7 +44,7 @@ namespace Visual
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.tbrSleep = new System.Windows.Forms.TrackBar();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.lbPath = new System.Windows.Forms.Label();
+            this.lbCost = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.lbTime = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
@@ -52,12 +52,12 @@ namespace Visual
             this.btnClearStep = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtCellSize = new System.Windows.Forms.TextBox();
-            this.pnMaze = new Visual.MazeControl();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnMaze = new Visual.MazeControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbrSleep)).BeginInit();
@@ -125,7 +125,7 @@ namespace Visual
             // 
             // btnFind
             // 
-            this.btnFind.Location = new System.Drawing.Point(1002, 447);
+            this.btnFind.Location = new System.Drawing.Point(1002, 465);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(196, 39);
             this.btnFind.TabIndex = 2;
@@ -136,7 +136,7 @@ namespace Visual
             // btnStop
             // 
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(1002, 492);
+            this.btnStop.Location = new System.Drawing.Point(1002, 510);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(196, 39);
             this.btnStop.TabIndex = 3;
@@ -195,19 +195,18 @@ namespace Visual
             // 
             this.tbrSleep.LargeChange = 1;
             this.tbrSleep.Location = new System.Drawing.Point(1050, 385);
-            this.tbrSleep.Maximum = 5;
             this.tbrSleep.Name = "tbrSleep";
             this.tbrSleep.Size = new System.Drawing.Size(148, 56);
             this.tbrSleep.TabIndex = 1;
             this.tbrSleep.Scroll += new System.EventHandler(this.tbrSleep_Scroll);
             // 
-            // lbPath
+            // lbCost
             // 
-            this.lbPath.Location = new System.Drawing.Point(998, 675);
-            this.lbPath.Name = "lbPath";
-            this.lbPath.Size = new System.Drawing.Size(200, 24);
-            this.lbPath.TabIndex = 6;
-            this.lbPath.Text = "Path: 0";
+            this.lbCost.Location = new System.Drawing.Point(998, 675);
+            this.lbCost.Name = "lbCost";
+            this.lbCost.Size = new System.Drawing.Size(200, 24);
+            this.lbCost.TabIndex = 6;
+            this.lbCost.Text = "Cost: 0";
             // 
             // timer1
             // 
@@ -224,7 +223,7 @@ namespace Visual
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(1002, 582);
+            this.btnClear.Location = new System.Drawing.Point(1002, 600);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(196, 39);
             this.btnClear.TabIndex = 8;
@@ -243,7 +242,7 @@ namespace Visual
             // 
             // btnClearStep
             // 
-            this.btnClearStep.Location = new System.Drawing.Point(1002, 537);
+            this.btnClearStep.Location = new System.Drawing.Point(1002, 555);
             this.btnClearStep.Name = "btnClearStep";
             this.btnClearStep.Size = new System.Drawing.Size(196, 39);
             this.btnClearStep.TabIndex = 8;
@@ -269,17 +268,6 @@ namespace Visual
             this.txtCellSize.Text = "30";
             this.txtCellSize.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCellSize_KeyDown);
             // 
-            // pnMaze
-            // 
-            this.pnMaze.BackColor = System.Drawing.Color.White;
-            this.pnMaze.Location = new System.Drawing.Point(10, 40);
-            this.pnMaze.Name = "pnMaze";
-            this.pnMaze.Size = new System.Drawing.Size(982, 735);
-            this.pnMaze.TabIndex = 0;
-            this.pnMaze.Paint += new System.Windows.Forms.PaintEventHandler(this.pnMaze_Paint);
-            this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
-            this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
-            // 
             // menuStrip1
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -287,7 +275,7 @@ namespace Visual
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1210, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1210, 28);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -298,7 +286,7 @@ namespace Visual
             this.openToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 26);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // saveToolStripMenuItem
@@ -306,7 +294,7 @@ namespace Visual
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + S";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(189, 26);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -315,7 +303,7 @@ namespace Visual
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + O";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(189, 26);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -324,9 +312,20 @@ namespace Visual
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt + F4";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(189, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // pnMaze
+            // 
+            this.pnMaze.BackColor = System.Drawing.Color.White;
+            this.pnMaze.Location = new System.Drawing.Point(10, 40);
+            this.pnMaze.Name = "pnMaze";
+            this.pnMaze.Size = new System.Drawing.Size(982, 735);
+            this.pnMaze.TabIndex = 0;
+            this.pnMaze.Paint += new System.Windows.Forms.PaintEventHandler(this.pnMaze_Paint);
+            this.pnMaze.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseDown);
+            this.pnMaze.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnMaze_MouseMove);
             // 
             // Form1
             // 
@@ -340,7 +339,7 @@ namespace Visual
             this.Controls.Add(this.btnClearStep);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.lbTime);
-            this.Controls.Add(this.lbPath);
+            this.Controls.Add(this.lbCost);
             this.Controls.Add(this.tbrSleep);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnStop);
@@ -385,7 +384,7 @@ namespace Visual
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TrackBar tbrSleep;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label lbPath;
+        private System.Windows.Forms.Label lbCost;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.Button btnClear;
