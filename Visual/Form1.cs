@@ -489,7 +489,6 @@ namespace Visual
                         maze.SetCellValue(current.Position, CellValue.Visited);
                     }
 
-
                     Thread.Sleep(Sleep);
 
                     openSet.Remove(current);
