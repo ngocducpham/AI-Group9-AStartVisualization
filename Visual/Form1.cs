@@ -465,7 +465,6 @@ namespace Visual
             tbrSleep.Enabled = true;
             btnClear.Enabled = true;
             txtCellSize.Enabled = true;
-            pnMaze.Invalidate();
         }
 
         private bool aStart(Maze maze, Heuristic her)
@@ -491,7 +490,6 @@ namespace Visual
                 {
                     if (current.Position == maze.GoalPosition)
                     {
-                        pnMaze.Invalidate();
                         reconstruct_path(current);
                         return true;
                     }
