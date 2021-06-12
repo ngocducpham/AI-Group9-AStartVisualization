@@ -20,7 +20,7 @@ namespace Visual
 
         private delegate double Heuristic(Cell current);
 
-        private Heuristic heur;
+        private Heuristic heuristic;
 
         private Thread ThreadFind;
 
@@ -48,7 +48,7 @@ namespace Visual
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            heur = ManhattanHeuristic;
+            heuristic = ManhattanHeuristic;
         }
 
         #region Paint
@@ -165,7 +165,7 @@ namespace Visual
             }
 
             SetupFind();
-            ThreadFind = new Thread(() => aStart(Maze, heur));
+            ThreadFind = new Thread(() => aStart(Maze, heuristic));
             ThreadFind.IsBackground = true;
             ThreadFind.Start();
         }
@@ -244,17 +244,17 @@ namespace Visual
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            heur = ManhattanHeuristic;
+            heuristic = ManhattanHeuristic;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            heur = DiagonalHeuristic;
+            heuristic = DiagonalHeuristic;
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            heur = EuclideanHeuristic;
+            heuristic = EuclideanHeuristic;
         }
 
         private void tbrSleep_Scroll(object sender, EventArgs e)
@@ -457,6 +457,7 @@ namespace Visual
 
             }
 
+            pnMaze.Invalidate();
             lbCost.Text = "Path: " + i.ToString();
             SetupEndFind();
         }
