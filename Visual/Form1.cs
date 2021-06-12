@@ -112,12 +112,15 @@ namespace Visual
             switch (DrawMode)
             {
                 case DrawMode.DrawWall:
+                    ClearFindStep();
                     Maze.SetCellValue(cellPos, CellValue.Wall);
                     break;
                 case DrawMode.DrawStart:
+                    ClearFindStep();
                     Maze.SetCellValue(cellPos, CellValue.Start);
                     break;
                 case DrawMode.DrawGoal:
+                    ClearFindStep();
                     Maze.SetCellValue(cellPos, CellValue.Goal);
                     break;
                 case DrawMode.Delete:
@@ -388,7 +391,6 @@ namespace Visual
 
         #endregion
 
-        #region Algorithm
         #region Heuristic
         // http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
 
@@ -435,6 +437,8 @@ namespace Visual
         }
 
         #endregion
+
+        #region Algorithm
 
         private void ReconstructPath(Cell current)
         {
