@@ -127,11 +127,11 @@ namespace Visual
                     break;
                 case DrawMode.DrawStart:
                     Maze.SetCellValue(cellPos, CellValue.Start);
-                    
+
                     break;
                 case DrawMode.DrawGoal:
                     Maze.SetCellValue(cellPos, CellValue.Goal);
-                    
+
                     break;
                 case DrawMode.Delete:
                     Maze.SetCellValue(cellPos, CellValue.None);
@@ -440,7 +440,7 @@ namespace Visual
                 current = current.CameFrom;
                 if (current.Position == Maze.StartCell.Position)
                     break;
-            
+
                 current.Value = CellValue.Path;
 
                 if (Sleep != 0)
@@ -472,55 +472,55 @@ namespace Visual
             maze.StartCell.gScore = 0;
             maze.StartCell.fScore = her(maze.StartCell);
 
+            Cell current;
             while (openSet.Count != 0)
             {
-                foreach (var current in MinfScore(openSet))
+                current = MinfScore(openSet);
+                if (current.Position == maze.GoalCell.Position)
                 {
-                    if (current.Position == maze.GoalCell.Position)
+                    ReconstructPath(current);
+                    return true;
+                }
+
+                if (current.Position != maze.StartCell.Position)
+                {
+                    if (Sleep != 0)
+                        pnMaze.Invalidate();
+                    maze.SetCellValue(current.Position, CellValue.Visited);
+                }
+
+                Thread.Sleep(Sleep);
+
+                openSet.Remove(current);
+
+                foreach (var neughbor in FindNeighbors(current))
+                {
+                    var tentative_gScore = current.gScore + 1;
+                    if (tentative_gScore < neughbor.gScore)
                     {
-                        ReconstructPath(current);
-                        return true;
-                    }
-
-                    if (current.Position != maze.StartCell.Position)
-                    {
-                        if (Sleep != 0)
-                            pnMaze.Invalidate();
-                        maze.SetCellValue(current.Position, CellValue.Visited);
-                    }
-
-                    Thread.Sleep(Sleep);
-
-                    openSet.Remove(current);
-
-                    foreach (var neughbor in FindNeighbors(current))
-                    {
-                        var tentative_gScore = current.gScore + 1;
-                        if (tentative_gScore < neughbor.gScore)
+                        neughbor.CameFrom = current;
+                        neughbor.gScore = tentative_gScore;
+                        neughbor.fScore = neughbor.gScore + her(neughbor);
+                        if (!Exists(openSet, neughbor))
                         {
-                            neughbor.CameFrom = current;
-                            neughbor.gScore = tentative_gScore;
-                            neughbor.fScore = neughbor.gScore + her(neughbor);
-                            if (!Exists(openSet, neughbor))
+                            if (neughbor.Position != maze.GoalCell.Position)
                             {
-                                if (neughbor.Position != maze.GoalCell.Position)
-                                {
-                                    maze.SetCellValue(neughbor.Position, CellValue.Neighbor);
-                                    if (Sleep != 0)
-                                        pnMaze.Invalidate();
-                                }
-
-                                openSet.Add(neughbor);
-
-                                Thread.Sleep(Sleep);
+                                maze.SetCellValue(neughbor.Position, CellValue.Neighbor);
+                                if (Sleep != 0)
+                                    pnMaze.Invalidate();
                             }
+
+                            openSet.Add(neughbor);
+
+                            Thread.Sleep(Sleep);
                         }
+
                     }
                 }
             }
 
             timer1.Stop();
-            EnableControl();          
+            EnableControl();
             MessageBox.Show("Không tìm thấy đường đi", "AStart Visualization", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
@@ -559,23 +559,15 @@ namespace Visual
         }
 
 
-        private List<Cell> MinfScore(List<Cell> open)
+        private Cell MinfScore(List<Cell> open)
         {
-            double min = open[0].fScore;
-            List<Cell> result = new List<Cell>();
-            result.Add(open[0]);
+            Cell result = open[0];
 
             for (int i = 1; i < open.Count; i++)
             {
-                if (open[i].fScore < min)
+                if (open[i].fScore < result.fScore)
                 {
-                    result.Clear();
-                    result.Add(open[i]);
-                    min = open[i].fScore;
-                }
-                else if (open[i].fScore == min)
-                {
-                    result.Add(open[i]);
+                    result = open[i];
                 }
             }
 
