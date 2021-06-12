@@ -5,17 +5,6 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
-/*
- *  Y LÀ J
- *  X LÀ I
- *  X LÀ WIDTH
- *  Y LÀ CAO
- *  0 chưa có
- *  1 tường 
- *  2 bắt đầu
- *  3 đích
- * */
-
 
 namespace Visual
 {
@@ -185,6 +174,30 @@ namespace Visual
             ThreadFind = new Thread(() => aStart(Maze, heur));
             ThreadFind.IsBackground = true;
             ThreadFind.Start();
+        }
+
+        private void EnableControl()
+        {
+            btnClearStep.Enabled = true;
+            btnFind.Enabled = true;
+            btnStop.Enabled = false;
+            groupBox1.Enabled = true;
+            groupBox2.Enabled = true;
+            tbrSleep.Enabled = true;
+            btnClear.Enabled = true;
+            txtCellSize.Enabled = true;
+        }
+
+        private void DisableControl()
+        {
+            groupBox1.Enabled = false;
+            groupBox2.Enabled = false;
+            btnFind.Enabled = false;
+            btnStop.Enabled = true;
+            tbrSleep.Enabled = false;
+            btnClear.Enabled = false;
+            btnClearStep.Enabled = false;
+            txtCellSize.Enabled = false;
         }
 
         private void ClearFindStep()
@@ -516,6 +529,7 @@ namespace Visual
                             }
                         }
                     }
+
                 }
             }
 
@@ -582,34 +596,32 @@ namespace Visual
             return result;
         }
 
+        private List<Cell> MinfsScore(List<Cell> open)
+        {
+            double min = open[0].fScore;
+            List<Cell> result = new List<Cell>();
+            result.Add(open[0]);
+
+            for (int i = 1; i < open.Count; i++)
+            {
+                if (open[i].fScore < min)
+                {
+                    result.Clear();
+                    result.Add(open[i]);
+                    min = open[i].fScore;
+                }
+                else if (open[i].fScore == min)
+                {
+                    result.Add(open[i]);
+                }
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region Common
-
-        private void EnableControl()
-        {
-            btnClearStep.Enabled = true;
-            btnFind.Enabled = true;
-            btnStop.Enabled = false;
-            groupBox1.Enabled = true;
-            groupBox2.Enabled = true;
-            tbrSleep.Enabled = true;
-            btnClear.Enabled = true;
-            txtCellSize.Enabled = true;
-        }
-
-        private void DisableControl()
-        {
-            groupBox1.Enabled = false;
-            groupBox2.Enabled = false;
-            btnFind.Enabled = false;
-            btnStop.Enabled = true;
-            tbrSleep.Enabled = false;
-            btnClear.Enabled = false;
-            btnClearStep.Enabled = false;
-            txtCellSize.Enabled = false;
-        }
-
         // dùng cho vòng lặp
         private CellPositon ConvertToIJ(Point location)
         {
