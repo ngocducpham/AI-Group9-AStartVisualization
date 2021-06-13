@@ -111,16 +111,13 @@ namespace Visual
             var cellPos = ConvertToIJ(e.Location);
             switch (DrawMode)
             {
-                case DrawMode.DrawWall:
-                    ClearFindStep();
+                case DrawMode.DrawWall:                  
                     Maze.SetCellValue(cellPos, CellValue.Wall);
                     break;
                 case DrawMode.DrawStart:
-                    ClearFindStep();
                     Maze.SetCellValue(cellPos, CellValue.Start);
                     break;
                 case DrawMode.DrawGoal:
-                    ClearFindStep();
                     Maze.SetCellValue(cellPos, CellValue.Goal);
                     break;
                 case DrawMode.Delete:
@@ -130,6 +127,7 @@ namespace Visual
                     break;
             }
 
+            ClearFindStep();
             pnMaze.Invalidate();
         }
 
